@@ -6,11 +6,8 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-clearscreen = "3.0.0"
+clap = { version = "4.5.4", features = ["derive"] }
 image = "0.25.1"
-itertools = "0.12.1"
 nalgebra = "0.32.5"
 neobridge-rust = "0.1.0"
-serde = "1.0.198"
-toml = "0.8.12"
 xcap = "0.0.8"
