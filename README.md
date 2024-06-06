@@ -9,6 +9,7 @@
 
 [![Status](https://img.shields.io/badge/status-active-success.svg)]()
 ![GitHub Issues or Pull Requests](https://img.shields.io/github/issues/porplax/jellyfish-rs)
+
 ![IMG_1036-ezgif com-speed](https://github.com/porplax/jellyfish-rs/assets/66521670/bfba4df8-9ba1-43da-8313-4a69f154d7dc)
 </div>
 
