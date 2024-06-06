@@ -1,5 +1,3 @@
-#![windows_subsystem = "windows"]
-
 use neobridge_rust::{ Neobridge, RGB };
 use xcap::Monitor;
 use image::{ self, Pixel };
