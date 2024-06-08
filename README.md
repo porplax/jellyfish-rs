@@ -97,7 +97,7 @@ If you have a decent PC build, jellyfish should not take up an abundance of reso
 
 ### detailed optimization list
 - [ ] Replace `Vec<>, String` with static-sized variables.
-- [ ] Replace algorithm with cartesian product: `iproduct!` (see if it grants perf. boost)
+- [ ] Replace algorithm with cartesian product: `iproduct!`
 
 ## those involved <a name = "those involved"></a>
 
