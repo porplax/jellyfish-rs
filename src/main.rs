@@ -62,7 +62,7 @@ impl JellyRenderer {
         let mut colors: Vec<RGB> = Vec::with_capacity(self.n_of_leds);
         self.x = 0;
 
-        let mut channels: DMatrixu16 = DMatrix::identity(self.depth, 3);
+        let mut channels: DMatrixf32 = DMatrix::identity(self.depth, 3);
         if let Ok(image) = self.monitors.get(0).unwrap().capture_image() {
             for _x in 0..self.n_of_leds {
                 self.y = self.height-1;
