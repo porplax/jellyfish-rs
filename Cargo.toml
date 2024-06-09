@@ -12,7 +12,6 @@ nalgebra = "0.32.5"
 neobridge-rust = "0.1.0"
 xcap = "0.0.8"
 itertools = "0.13.0"
-smallvec = "1.13.2"
 
 [profile.dev]
 opt-level = 0

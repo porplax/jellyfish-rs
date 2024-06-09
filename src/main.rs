@@ -20,7 +20,7 @@ struct Args {
     refresh_rate: u64
 }
 
-type DMatrixu16 = OMatrix<f32, Dyn, Dyn>;
+type DMatrixf32 = OMatrix<f32, Dyn, Dyn>;
 
 struct JellyRenderer {
     neobridge: Neobridge,

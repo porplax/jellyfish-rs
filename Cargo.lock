@@ -733,7 +733,6 @@ dependencies = [
  "itertools 0.13.0",
  "nalgebra",
  "neobridge-rust",
- "smallvec",
  "xcap",
 ]
 
