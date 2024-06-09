@@ -33,6 +33,8 @@ struct JellyRenderer {
     x: u32, 
     y: u32,
 
+    channels: DMatrixf32,
+
     depth: usize,
 }
 
@@ -48,6 +50,8 @@ impl JellyRenderer {
 
             x: 0,
             y: 0,
+
+            channels: DMatrixf32::zeros(0, 0),
             
             depth
         }
@@ -62,24 +66,24 @@ impl JellyRenderer {
         let mut colors: Vec<RGB> = Vec::with_capacity(self.n_of_leds);
         self.x = 0;
 
-        let mut channels: DMatrixf32 = DMatrix::identity(self.depth, 3);
+        self.channels = DMatrix::identity(self.depth, 3);
         if let Ok(image) = self.monitors.get(0).unwrap().capture_image() {
             for _x in 0..self.n_of_leds {
                 self.y = self.height-1;
     
                 for _y in 0..self.depth {
                     let rgb_val = image.get_pixel(self.x, self.y);
-                    channels[(_y, 0)] = rgb_val.channels()[0] as f32; // R
-                    channels[(_y, 1)] = rgb_val.channels()[1] as f32; // G
-                    channels[(_y, 2)] = rgb_val.channels()[2] as f32; // B
+                    self.channels[(_y, 0)] = rgb_val.channels()[0] as f32; // R
+                    self.channels[(_y, 1)] = rgb_val.channels()[1] as f32; // G
+                    self.channels[(_y, 2)] = rgb_val.channels()[2] as f32; // B
     
                     self.y -= 1;
                 }
     
                 let rgb_convert = RGB(
-                    channels.column(0).mean() as u8,
-                    channels.column(1).mean() as u8,
-                    channels.column(2).mean() as u8
+                    self.channels.column(0).mean() as u8,
+                    self.channels.column(1).mean() as u8,
+                    self.channels.column(2).mean() as u8
                 );
                 
                 colors.push(rgb_convert);
