@@ -96,8 +96,9 @@ If you have a decent PC build, jellyfish should not take up an abundance of reso
 - [ ] Create a contribution section.
 
 ### detailed optimization list
-- [ ] Replace `Vec<>, String` with static-sized variables.
-- [ ] Replace algorithm with cartesian product: `iproduct!`
+- [X] Pre-allocation of Vectors.
+- [ ] Replace nested iterators with higher order functions.
+- [ ] Create `DMatrixu8` once instead of in a loop.
 
 ## those involved <a name = "those involved"></a>
 
