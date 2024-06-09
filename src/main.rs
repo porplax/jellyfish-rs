@@ -11,7 +11,7 @@ struct Args {
     #[arg(short, long)]
     width: u32,
     height: u32,
-    n_of_leds: u32,
+    n_of_leds: usize,
 
     #[arg(short, long, default_value_t = 132)]
     depth: usize,
@@ -28,7 +28,7 @@ struct JellyRenderer {
 
     width: u32, 
     height: u32,
-    n_of_leds: u32,
+    n_of_leds: usize,
 
     x: u32, 
     y: u32,
@@ -37,7 +37,7 @@ struct JellyRenderer {
 }
 
 impl JellyRenderer {
-    pub fn new(neobridge: Neobridge, monitors: Vec<Monitor>, depth: usize, width: u32, height: u32, n_of_leds: u32) -> JellyRenderer {
+    pub fn new(neobridge: Neobridge, monitors: Vec<Monitor>, depth: usize, width: u32, height: u32, n_of_leds: usize) -> JellyRenderer {
         JellyRenderer {
             neobridge,
             monitors,
@@ -59,7 +59,7 @@ impl JellyRenderer {
     }
 
     pub fn grab_colors(&mut self) -> Vec<RGB> {
-        let mut colors: Vec<RGB> = vec![];
+        let mut colors: Vec<RGB> = Vec::with_capacity(self.n_of_leds);
         self.x = 0;
 
         let mut channels: DMatrixu16 = DMatrix::identity(self.depth, 3);
@@ -83,7 +83,7 @@ impl JellyRenderer {
                 );
                 
                 colors.push(rgb_convert);
-                self.x += self.width / self.n_of_leds;
+                self.x += self.width / self.n_of_leds as u32;
             }
         } 
         colors
