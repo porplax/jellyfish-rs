@@ -98,7 +98,7 @@ If you have a decent PC build, jellyfish should not take up an abundance of reso
 ### detailed optimization list
 - [X] Pre-allocation of Vectors.
 - [ ] Replace nested iterators with higher order functions.
-- [ ] Create `DMatrixu8` once instead of in a loop.
+- [X] Create `DMatrixu8` once instead of in a loop.
 
 ## those involved <a name = "those involved"></a>
 
