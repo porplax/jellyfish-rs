@@ -36,7 +36,7 @@
 
 ## 💫about this project💫 <a name = "about"></a>
 
-Wanted to ***⭐spice up your setup?⭐*** Jellyfish reacts to what's on your monitor and controls Neopixels to copy what's on it. In other words, it's ambient lighting. 
+Wanted to***⭐spice up your setup?⭐*** Jellyfish reacts to what's on your monitor and controls Neopixels to copy what's on it. In other words, it's ambient lighting. 
 
 It does this via **Neobridge**. It lets your PC to communicate to a RP2040 board _(other circuitpython boards should work but it's not tested)_. Sends RGB data and tells the board to control the Neopixels connected to the board.
 
@@ -97,6 +97,7 @@ If you have a decent PC build, jellyfish should not take up an abundance of reso
 
 ### detailed optimization list
 - [ ] Replace `Vec<>, String` with static-sized variables.
+- [ ] Replace algorithm with cartesian product: `iproduct!`
 
 ## those involved <a name = "those involved"></a>
 
