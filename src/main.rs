@@ -13,6 +13,9 @@ struct Args {
     height: u32,
     n_of_leds: usize,
 
+    #[arg(short, long, default_value_t = String::from("COM3"))]
+    port: String,
+
     #[arg(short, long, default_value_t = 132)]
     depth: usize,
 
