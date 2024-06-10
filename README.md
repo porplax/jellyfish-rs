@@ -111,8 +111,9 @@ If you have a decent PC build, jellyfish should not take up an abundance of reso
 
 ### detailed optimization list
 - [X] Pre-allocation of Vectors.
-- [ ] Replace nested iterators with higher order functions.
 - [X] Create `DMatrixf32` once instead of in a loop.
+- [ ] Refactor `JellyRenderer`
+- [ ] Replace nested iterators with higher order functions.
 
 ## those involved <a name = "those involved"></a>
 
