@@ -75,7 +75,8 @@ Download `jellyfish-rs.exe` into a suitable location.
 **options:**
 - `-d, --depth <DEPTH> [default: 132]` - How many colors to capture (*less is more accurate, higher is more ambient*)
 - `-r, --refresh-rate <REFRESH_RATE> [default: 60]` - FPS of capture
-
+- `-p, --port <PORT> [default: COM3]` - Port of board
+  
 **example:** (*30 LEDs, depth of 16, FPS set to 165*)
 ```
 ./jellyfish-rs.exe --width 1920 1080 30 --depth 16 --refresh-rate 165
