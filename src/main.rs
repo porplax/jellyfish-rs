@@ -100,7 +100,7 @@ impl JellyRenderer {
 fn main() {
     let args = Args::parse();
 
-    let neobridge = Neobridge::new("COM3", 30);
+    let neobridge = Neobridge::new(&args.port, 30);
     let monitors = Monitor::all().unwrap();
 
     let mut jelly = JellyRenderer::new(
