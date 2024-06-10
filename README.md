@@ -24,6 +24,8 @@
 - [🪼table of contents🪼](#table-of-contents)
 - [💫about this project💫 ](#about-this-project-)
 - [🖋️getting started🖋️ ](#️getting-started️-)
+  - [DIY supplies](#diy-supplies)
+    - [getting things right](#getting-things-right)
   - [prerequisites](#prerequisites)
   - [installing the project](#installing-the-project)
     - [Supported platforms](#supported-platforms)
@@ -38,10 +40,18 @@
 
 Wanted to***⭐spice up your setup?⭐*** Jellyfish reacts to what's on your monitor and controls Neopixels to copy what's on it. In other words, it's ambient lighting. 
 
-It does this via **Neobridge**. It lets your PC to communicate to a RP2040 board _(other circuitpython boards should work but it's not tested)_. Sends RGB data and tells the board to control the Neopixels connected to the board.
+It does this via **Neobridge**. It lets your PC to communicate to a circuitpython board. Sends RGB data and tells the board to control the Neopixels connected to the board.
 
 ## 🖋️getting started🖋️ <a name = "getting started"></a>
 
+### DIY supplies
+Jellyfish is a DIY project. All you need is a circuitpython board, few wires, and a neopixel LED strip (*i don't know if other LEDs can work, this is just from experience*).
+#### getting things right
+If you really wanna get things right, it is essential to have the right size LED for your desk setup. Here was my setup.
+- <a href="https://www.adafruit.com/product/2552"> Adafruit NeoPixel Digital RGB LED Strip - Black 30 LED 1m - BLACK </a>
+- <a href="https://www.adafruit.com/product/5526">Pi Pico W</a>
+
+**Other boards should work with serial, but they must be circuitpython.**
 ### prerequisites
 
 Before you can run the jellyfish program, you'll need a circuitpython board to run **Neobridge**. 
@@ -93,8 +103,9 @@ If you have a decent PC build, jellyfish should not take up an abundance of reso
 - **Set width and height to your monitor's spec** (*any higher is useless*)
 
 ## 📃to-do list📃 <a name = "to-do"></a>
-- [ ] Create a automated installation script for circuitpython.
-- [ ] Create a contribution section.
+- [ ] Automated installation script for circuitpython.
+- [ ] Contribution section.
+- [ ] Detailed step-by-step tutorial with pictures.
 
 ### detailed optimization list
 - [X] Pre-allocation of Vectors.
