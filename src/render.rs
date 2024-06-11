@@ -1,4 +1,3 @@
-use std::mem::take;
 use image::{ImageBuffer, Pixel, Rgba};
 use nalgebra::{Dyn, OMatrix};
 use neobridge_rust::RGB;
@@ -50,7 +49,7 @@ impl JellyRenderer {
     }
 
     // get colors from provided imagebuffer.
-    pub fn grab(&mut self, image: &ImageBuffer<Rgba<u8>, Vec<u8>>) -> Vec<RGB> {
+    pub fn grab(&mut self, image: &ImageBuffer<Rgba<u8>, Vec<u8>>) -> &Vec<RGB> {
         // we clear what was in the buffer.        
         self.buf.current.clear();
         self.buf.channel = DMatrixf32::identity(self.depth, 3);
@@ -93,7 +92,6 @@ impl JellyRenderer {
         }
         
         // take ownership. so that rust doesn't throw an error.
-        let re = take(&mut self.buf.current);
-        re
+        &self.buf.current
     }
 }
