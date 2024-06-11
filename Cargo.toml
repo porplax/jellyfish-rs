@@ -15,13 +15,9 @@ itertools = "0.13.0"
 arrayvec = "0.7.4"
 replace_with = "0.1.7"
 
-[profile.dev]
-opt-level = 0
-
 [profile.release]
 lto = true
-codegen-units = 1
-opt-level = "z"
+opt-level = 3
 
 [dev-dependencies]
 criterion = { version = "0.4", features = ["html_reports"] }
