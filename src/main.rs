@@ -25,10 +25,9 @@ struct Args {
 
 fn main() {
     let args = Args::parse();
-
-    let mut neobridge = Neobridge::new(&args.port, args.n_of_leds.try_into().unwrap());
     let monitors = Monitor::all().unwrap();
 
+    let mut neobridge = Neobridge::new(&args.port, args.n_of_leds.try_into().unwrap());
     let mut jelly = render::JellyRenderer::new(
         args.depth,
         args.width,
@@ -36,15 +35,17 @@ fn main() {
         args.n_of_leds
         );
 
+
     neobridge.set_all(RGB(0, 0, 0));
     neobridge.show();
 
     loop {
         if let Ok(image) = monitors.get(0).unwrap().capture_image() {
-            let colors = jelly.grab(image);
+            let colors = jelly.grab(&image);
 
             neobridge.set_list(colors);
             neobridge.show();
+
         }
         thread::sleep(Duration::from_millis(1000 / args.refresh_rate));
     }

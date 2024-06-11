@@ -50,7 +50,7 @@ impl JellyRenderer {
     }
 
     // get colors from provided imagebuffer.
-    pub fn grab(&mut self, image: ImageBuffer<Rgba<u8>, Vec<u8>>) -> Vec<RGB> {
+    pub fn grab(&mut self, image: &ImageBuffer<Rgba<u8>, Vec<u8>>) -> Vec<RGB> {
         // we clear what was in the buffer.        
         self.buf.current.clear();
         self.buf.channel = DMatrixf32::identity(self.depth, 3);
