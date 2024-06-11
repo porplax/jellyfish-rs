@@ -95,7 +95,7 @@ Download `jellyfish-rs.exe` into a suitable location.
 ### ⏳optimizing⌛
 Jellyfish is a early release and has ways to go in terms of optimization. Here's what I found when testing on my system.
 ```
-[AMD Ryzen 5 7600 6-Core] Depth=16, FPS=165, AVG ~3% of CPU Usage 
+[AMD Ryzen 5 7600 6-Core] Depth=16, FPS=165, AVG ~1.5% of CPU Usage 
 ```
 If you have a decent PC build, jellyfish should not take up an abundance of resources. However if you're suffering from heavy CPU load, here are some tips:
 - **Turn down FPS** (*usually this doesn't matter but can help on low-end systems*) 
