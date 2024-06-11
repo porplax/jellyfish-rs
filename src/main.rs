@@ -27,6 +27,7 @@ fn main() {
     let args = Args::parse();
 
     let mut neobridge = Neobridge::new(&args.port, args.n_of_leds.try_into().unwrap());
+    let monitors = Monitor::all().unwrap();
 
     let mut jelly = render::JellyRenderer::new(
         args.depth,
@@ -39,7 +40,7 @@ fn main() {
     neobridge.show();
 
     loop {
-        if let Ok(image) = Monitor::all().unwrap().get(0).unwrap().capture_image() {
+        if let Ok(image) = monitors.get(0).unwrap().capture_image() {
             let colors = jelly.grab(image);
 
             neobridge.set_list(colors);
