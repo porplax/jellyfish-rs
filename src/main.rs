@@ -26,7 +26,7 @@ struct Args {
 fn main() {
     let args = Args::parse();
 
-    let mut neobridge = Neobridge::new(&args.port, 30);
+    let mut neobridge = Neobridge::new(&args.port, args.n_of_leds.try_into().unwrap());
 
     let mut jelly = render::JellyRenderer::new(
         args.depth,
@@ -45,6 +45,6 @@ fn main() {
             neobridge.set_list(colors);
             neobridge.show();
         }
-        thread::sleep(Duration::from_millis(1000 / args.refresh_rate as u64));
+        thread::sleep(Duration::from_millis(1000 / args.refresh_rate));
     }
 }
