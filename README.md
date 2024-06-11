@@ -34,7 +34,6 @@
 - [🚥usage🚥 ](#usage-)
   - [⏳optimizing⌛](#optimizing)
 - [📃to-do list📃 ](#to-do-list-)
-  - [detailed optimization list](#detailed-optimization-list)
 - [those involved ](#those-involved-)
 - [crates used ](#crates-used-)
 
@@ -108,12 +107,6 @@ If you have a decent PC build, jellyfish should not take up an abundance of reso
 - [ ] Automated installation script for circuitpython.
 - [ ] Contribution section.
 - [ ] Detailed step-by-step tutorial with pictures.
-
-### detailed optimization list
-- [X] Pre-allocation of Vectors.
-- [X] Create `DMatrixf32` once instead of in a loop.
-- [ ] Refactor `JellyRenderer`
-- [ ] Replace nested iterators with higher order functions.
 
 ## those involved <a name = "those involved"></a>
 
