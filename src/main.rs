@@ -13,16 +13,23 @@ mod buffer;
     about = "Ambient lighting on neopixel devices."
 )]
 struct Args {
-    #[arg(short, long)]
+    /// Monitor to screen record
+    #[arg(short, long, default_value_t = 0)]
     monitor: usize,
+
+    /// Number of LEDs present on the strip
+    #[arg(short, long)]
     n_of_leds: usize,
 
+    /// Port of the board
     #[arg(short, long, default_value_t = String::from("COM3"))]
     port: String,
 
-    #[arg(short, long, default_value_t = 132)]
+    /// How many colors to calculate for each LED on the strip
+    #[arg(short, long, default_value_t = 16)]
     depth: usize,
 
+    /// Refresh rate of the program
     #[arg(short, long, default_value_t = 60)]
     refresh_rate: u64,
 }
