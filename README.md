@@ -62,7 +62,7 @@ Before you can run the jellyfish program, you'll need a circuitpython board to r
 **If you have another board or want to do manual installation, here are the instructions:**
 - Download a [Circuitpython 8.x/9.x .UF2 file](https://circuitpython.org/downloads), the library bundle and [code.py](https://github.com/porplax/neobridge/raw/master/src/neobridge/code.py).
 - Flash the Circuitpython 8.x/9.x .UF2 file onto your board.
-- Move `neopixel.mpy` from the bundle to the board.
+- Move `neopixel.mpy` from the bundle to `\lib`.
 - Modify `code.py` by changing the pinout, number of pixels, and order.
 - Make sure it is running and will run each bootup.
 ### installing the project
