@@ -56,17 +56,15 @@ If you really wanna get things right, it is essential to have the right size LED
 ### prerequisites
 
 Before you can run the jellyfish program, you'll need a circuitpython board to run **Neobridge**. 
-- Flash circuitpython 8.x onto a compatible board (**Download the library bundle as well**)
-- [Load the Neobridge script](https://github.com/porplax/neobridge)
 
-After following the instructions, you will need to hook up a Neopixels LED strip, and to make sure that it works, you will need to modify the Neobridge script if the pinout is different from what it codes for.
+**If you have a RPI Pico/RPI Pico W board,** [you can use the automated installer on windows](https://github.com/porplax/neobridge/raw/master/neobridge-install.py).
 
-Jellyfish only captures what is at the bottom of your monitor at the moment, so you should put the LED strip at the back of your desk.
-```py
-neo = neopixel.NeoPixel(
-    PIXEL_PIN, NUMBER_OF_PIXELS, brightness=1, auto_write=False, pixel_order=ORDER)
-```
-*MAKE SURE CODE.PY IS CORRECT!*
+**If you have another board or want to do manual installation, here are the instructions:**
+- Download a [Circuitpython 8.x/9.x .UF2 file](https://circuitpython.org/downloads), the library bundle and [code.py](https://github.com/porplax/neobridge/raw/master/src/neobridge/code.py).
+- Flash the Circuitpython 8.x/9.x .UF2 file onto your board.
+- Move `neopixel.mpy` from the bundle to the board.
+- Modify `code.py` by changing the pinout, number of pixels, and order.
+- Make sure it is running and will run each bootup.
 ### installing the project
 
 #### Supported platforms
@@ -104,7 +102,7 @@ If you have a decent PC build, jellyfish should not take up an abundance of reso
 - **Set width and height to your monitor's spec** (*any higher is useless*)
 
 ## 📃to-do list📃 <a name = "to-do"></a>
-- [ ] Automated installation script for circuitpython.
+- [X] Automated installation script for circuitpython.
 - [ ] Contribution section.
 - [ ] Detailed step-by-step tutorial with pictures.
 
