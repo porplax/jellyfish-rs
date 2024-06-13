@@ -21,22 +21,6 @@
     <br> 
 </p>
 
-## 🪼table of contents🪼
-
-- [🪼table of contents🪼](#table-of-contents)
-- [💫about this project💫 ](#about-this-project-)
-- [🖋️getting started🖋️ ](#️getting-started️-)
-  - [DIY supplies](#diy-supplies)
-    - [getting things right](#getting-things-right)
-  - [prerequisites](#prerequisites)
-  - [installing the project](#installing-the-project)
-    - [Supported platforms](#supported-platforms)
-- [🚥usage🚥 ](#usage-)
-  - [⏳optimizing⌛](#optimizing)
-- [📃to-do list📃 ](#to-do-list-)
-- [those involved ](#those-involved-)
-- [crates used ](#crates-used-)
-
 ## 💫about this project💫 <a name = "about"></a>
 
 Wanted to***⭐spice up your setup?⭐*** Jellyfish reacts to what's on your monitor and controls Neopixels to copy what's on it. In other words, it's ambient lighting. 
