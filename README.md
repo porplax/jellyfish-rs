@@ -4,7 +4,9 @@
 </p>
 
 <h3 align="center">jellyfish.</h3>
-
+<p align="center"> ambient lighting on your desktop using neopixels!
+    <br> 
+</p>
 <div align="center">
 
 
@@ -17,9 +19,7 @@
 
 ---
 
-<p align="center"> ambient lighting on your desktop using neopixels!
-    <br> 
-</p>
+
 
 ## 💫about this project💫 <a name = "about"></a>
 
