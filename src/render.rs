@@ -33,8 +33,8 @@ impl JellyRenderer {
         // clear so we don't run into errors.
         self.init();
 
-        let mut x = 0;
-        let mut _y = 0;
+        let mut x: u32 = 0;
+        let mut _y: u32 = 0;
 
         // we want to get a certain amount of pixels at the bottom.
         for _row in 0..self.n_of_leds {
@@ -44,7 +44,7 @@ impl JellyRenderer {
             // for example, if I have a depth of 10, 
             // then there will be 10 RGB values for each LED on a strip.
             for _column in 0..self.depth {
-                let rgb_val = image.get_pixel(x, _y);
+                let rgb_val: &Rgba<u8> = image.get_pixel(x, _y);
 
                 // to average over these later, go ahead and store these in a matrix.
                 self.buf.channel[(_column, 0)] = rgb_val.channels()[0] as f32; // R
