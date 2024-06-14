@@ -4,7 +4,9 @@
 </p>
 
 <h3 align="center">jellyfish.</h3>
-
+<p align="center"> ambient lighting on your desktop using neopixels!
+    <br> 
+</p>
 <div align="center">
 
 
@@ -17,25 +19,7 @@
 
 ---
 
-<p align="center"> ambient lighting on your desktop using neopixels!
-    <br> 
-</p>
 
-## 🪼table of contents🪼
-
-- [🪼table of contents🪼](#table-of-contents)
-- [💫about this project💫 ](#about-this-project-)
-- [🖋️getting started🖋️ ](#️getting-started️-)
-  - [DIY supplies](#diy-supplies)
-    - [getting things right](#getting-things-right)
-  - [prerequisites](#prerequisites)
-  - [installing the project](#installing-the-project)
-    - [Supported platforms](#supported-platforms)
-- [🚥usage🚥 ](#usage-)
-  - [⏳optimizing⌛](#optimizing)
-- [📃to-do list📃 ](#to-do-list-)
-- [those involved ](#those-involved-)
-- [crates used ](#crates-used-)
 
 ## 💫about this project💫 <a name = "about"></a>
 
@@ -56,17 +40,15 @@ If you really wanna get things right, it is essential to have the right size LED
 ### prerequisites
 
 Before you can run the jellyfish program, you'll need a circuitpython board to run **Neobridge**. 
-- Flash circuitpython 8.x onto a compatible board (**Download the library bundle as well**)
-- [Load the Neobridge script](https://github.com/porplax/neobridge)
 
-After following the instructions, you will need to hook up a Neopixels LED strip, and to make sure that it works, you will need to modify the Neobridge script if the pinout is different from what it codes for.
+**If you have a RPI Pico/RPI Pico W board,** [you can use the automated installer on windows](https://github.com/porplax/neobridge/raw/master/neobridge-install.py).
 
-Jellyfish only captures what is at the bottom of your monitor at the moment, so you should put the LED strip at the back of your desk.
-```py
-neo = neopixel.NeoPixel(
-    PIXEL_PIN, NUMBER_OF_PIXELS, brightness=1, auto_write=False, pixel_order=ORDER)
-```
-*MAKE SURE CODE.PY IS CORRECT!*
+**If you have another board or want to do manual installation, here are the instructions:**
+- Download a [Circuitpython 8.x/9.x .UF2 file](https://circuitpython.org/downloads), the library bundle and [code.py](https://github.com/porplax/neobridge/raw/master/src/neobridge/code.py).
+- Flash the Circuitpython 8.x/9.x .UF2 file onto your board.
+- Move `neopixel.mpy` from the bundle to `\lib`.
+- Modify `code.py` by changing the pinout, number of pixels, and order.
+- Make sure it is running and will run each bootup.
 ### installing the project
 
 #### Supported platforms
@@ -93,10 +75,6 @@ Download `jellyfish-rs.exe` into a suitable location.
 ./jellyfish-rs.exe --width 1920 1080 30 --depth 16 --refresh-rate 165
 ```
 ### ⏳optimizing⌛
-Jellyfish is a early release and has ways to go in terms of optimization. Here's what I found when testing on my system.
-```
-[AMD Ryzen 5 7600 6-Core] Depth=16, FPS=165, AVG ~1.5% of CPU Usage 
-```
 If you have a decent PC build, jellyfish should not take up an abundance of resources. However if you're suffering from heavy CPU load, here are some tips:
 - **Turn down FPS** (*usually this doesn't matter but can help on low-end systems*) 
 - **Lower depth** (*creates less computation for the CPU*)
@@ -104,7 +82,7 @@ If you have a decent PC build, jellyfish should not take up an abundance of reso
 - **Set width and height to your monitor's spec** (*any higher is useless*)
 
 ## 📃to-do list📃 <a name = "to-do"></a>
-- [ ] Automated installation script for circuitpython.
+- [X] Automated installation script for circuitpython.
 - [ ] Contribution section.
 - [ ] Detailed step-by-step tutorial with pictures.
 
