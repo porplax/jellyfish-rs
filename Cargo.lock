@@ -730,6 +730,7 @@ dependencies = [
  "image",
  "nalgebra",
  "neobridge-rust",
+ "smallvec",
  "xcap",
 ]
 

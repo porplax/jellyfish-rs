@@ -4,7 +4,6 @@ use std::{thread, time::Duration};
 use xcap::Monitor;
 
 mod render;
-mod buffer;
 
 #[derive(Parser, Debug)]
 #[command(
