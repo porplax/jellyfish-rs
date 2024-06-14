@@ -1,6 +1,8 @@
 use image::{ImageBuffer, Pixel, Rgba};
 use neobridge_rust::RGB;
 use smallvec::SmallVec;
+// By using SmallVec instead of DMatrix, there was a 6.74376% increase in performance.
+
 
 pub struct ChannelStorage {
     r: SmallVec<[u8; 30]>,
