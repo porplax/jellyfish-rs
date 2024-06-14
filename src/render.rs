@@ -1,14 +1,7 @@
 use image::{ImageBuffer, Pixel, Rgba};
 use neobridge_rust::RGB;
-use smallvec::SmallVec;
-// By using SmallVec instead of DMatrix, there was a 6.74376% increase in performance.
-
-
+// without using any list, there was a 72.930% increase in performance.
 pub struct ChannelStorage {
-    r: SmallVec<[u8; 30]>,
-    g: SmallVec<[u8; 30]>,
-    b: SmallVec<[u8; 30]>,
-
     expecting_size: usize,
 
     sum_of_r: u16,
@@ -19,10 +12,6 @@ pub struct ChannelStorage {
 impl ChannelStorage {
     pub fn new(expecting_size: usize) -> ChannelStorage {
         ChannelStorage {
-            r: SmallVec::with_capacity(0), 
-            g: SmallVec::with_capacity(0),
-            b: SmallVec::with_capacity(0),
-
             expecting_size,
 
             sum_of_r: 0,
@@ -31,12 +20,7 @@ impl ChannelStorage {
         }
     }
 
-
     fn push(&mut self, r: u8, g: u8, b: u8) {
-        self.r.push(r);
-        self.g.push(g);
-        self.b.push(b);
-
         self.sum_of_r = self.sum_of_r + r as u16;
         self.sum_of_g = self.sum_of_g + g as u16;
         self.sum_of_b = self.sum_of_b + b as u16;

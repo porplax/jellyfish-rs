@@ -720,7 +720,6 @@ dependencies = [
  "criterion",
  "image",
  "neobridge-rust",
- "smallvec",
  "xcap",
 ]
 

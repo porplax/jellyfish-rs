@@ -81,21 +81,20 @@ If you have a decent PC build, jellyfish should not take up an abundance of reso
 - **Force jellyfish on low priority or ECO** 
 - **Set width and height to your monitor's spec** (*any higher is useless*)
 
-## 📃to-do list📃 <a name = "to-do"></a>
+## 📃to-do list📃
 - [X] Automated installation script for circuitpython.
 - [ ] Contribution section.
 - [ ] Detailed step-by-step tutorial with pictures.
 
-## those involved <a name = "those involved"></a>
+## those involved
 
 - [@porplax](https://github.com/porplax) - Creator of the project.
 
 See also the list of [contributors](https://github.com/porplax/jellyfish-rs/contributors) who participated in this project.
 
-## crates used <a name = "acknowledgement"></a>
+## crates used
 
 - `xcap` [@nashaofu](https://github.com/nashaofu) | [Screen capture](https://crates.io/crates/xcap)
 - `image` [@image-rs](https://github.com/image-rs), [@theotherphil](https://github.com/theotherphil), [@fintelia](https://github.com/fintelia), [@HeroicKatora](https://github.com/HeroicKatora) | [Image processing](https://crates.io/crates/image)
-- `nalgebra` [@sebcrozet](https://github.com/sebcrozet), [@milibopp](https://github.com/milibopp) | [Math stuff](https://crates.io/crates/nalgebra)
 - `clap` [@clap-rs](https://github.com/clap-rs), [@Rust CLI WG](https://github.com/rust-cli), [@kbknapp](https://github.com/kbknapp) | [Command Line](https://crates.io/crates/clap)
 - and of course rust🦀🦀🦀!!!

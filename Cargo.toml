@@ -9,7 +9,6 @@ edition = "2021"
 clap = { version = "4.5.4", features = ["derive"] }
 image = "0.25.1"
 neobridge-rust = "0.1.4"
-smallvec = "1.13.2"
 xcap = "0.0.8"
 
 [profile.release]
