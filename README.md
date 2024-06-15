@@ -58,11 +58,10 @@ Download `jellyfish-rs.exe` into a suitable location.
 
 ## 🚥usage🚥 <a name="usage"></a>
 ```
-./jellyfish-rs.exe [OPTIONS] --width <WIDTH> <HEIGHT> <N_OF_LEDS>
+./jellyfish-rs.exe [OPTIONS] --monitor <MONITOR> <N_OF_LEDS>
 ```
 **arguments:**
-- `-w, --width <WIDTH>` - Width of capture (*usually monitor's width*)
-- `<HEIGHT>` - Height of capture (*usually monitor's height*)
+- `-m, --monitor <MONITOR>` - Which monitor to capture from
 - `<N_OF_LEDS>` - Number of LEDS on the strip
   
 **options:**
@@ -72,14 +71,13 @@ Download `jellyfish-rs.exe` into a suitable location.
   
 **example:** (*30 LEDs, depth of 16, FPS set to 165*)
 ```
-./jellyfish-rs.exe --width 1920 1080 30 --depth 16 --refresh-rate 165
+./jellyfish-rs.exe --monitor 0 30 --depth 16 --refresh-rate 165
 ```
 ### ⏳optimizing⌛
 If you have a decent PC build, jellyfish should not take up an abundance of resources. However if you're suffering from heavy CPU load, here are some tips:
 - **Turn down FPS** (*usually this doesn't matter but can help on low-end systems*) 
 - **Lower depth** (*creates less computation for the CPU*)
 - **Force jellyfish on low priority or ECO** 
-- **Set width and height to your monitor's spec** (*any higher is useless*)
 
 ## 📃to-do list📃
 - [X] Automated installation script for circuitpython.
