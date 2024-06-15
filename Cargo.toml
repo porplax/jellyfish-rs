@@ -1,6 +1,6 @@
 [package]
 name = "jellyfish-rs"
-version = "0.1.0"
+version = "1.2.0"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
@@ -8,7 +8,7 @@ edition = "2021"
 [dependencies]
 clap = { version = "4.5.4", features = ["derive"] }
 image = "0.25.1"
-neobridge-rust = "0.1.4"
+neobridge-rust = "0.1.5"
 xcap = "0.0.8"
 
 [profile.release]

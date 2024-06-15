@@ -714,7 +714,7 @@ checksum = "49f1f14873335454500d59611f1cf4a4b0f786f9ac11f4312a78e4cf2566695b"
 
 [[package]]
 name = "jellyfish-rs"
-version = "0.1.0"
+version = "1.2.0"
 dependencies = [
  "clap 4.5.7",
  "criterion",
@@ -874,9 +874,9 @@ dependencies = [
 
 [[package]]
 name = "neobridge-rust"
-version = "0.1.4"
+version = "0.1.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8ed7f341691b3642df121001bb14f52476e07f3a6c15e38b9f65bf05452895d2"
+checksum = "1a712de3dcd20430169effbbe26d8033fc42786d226e9190057687457d592e30"
 dependencies = [
  "serialport",
 ]
