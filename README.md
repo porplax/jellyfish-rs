@@ -92,7 +92,6 @@ See also the list of [contributors](https://github.com/porplax/jellyfish-rs/cont
 
 ## crates used
 
-- `xcap` [@nashaofu](https://github.com/nashaofu) | [Screen capture](https://crates.io/crates/xcap)
-- `image` [@image-rs](https://github.com/image-rs), [@theotherphil](https://github.com/theotherphil), [@fintelia](https://github.com/fintelia), [@HeroicKatora](https://github.com/HeroicKatora) | [Image processing](https://crates.io/crates/image)
+- `screenshots` [@nashaofu](https://github.com/nashaofu) | [Screen capture](https://crates.io/crates/screenshots)
 - `clap` [@clap-rs](https://github.com/clap-rs), [@Rust CLI WG](https://github.com/rust-cli), [@kbknapp](https://github.com/kbknapp) | [Command Line](https://crates.io/crates/clap)
 - and of course rust🦀🦀🦀!!!
