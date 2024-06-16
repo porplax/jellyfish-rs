@@ -1,7 +1,7 @@
 use clap::Parser;
 use neobridge_rust::{Neobridge, RGB};
 use std::{thread, time::Duration};
-use xcap::Monitor;
+use screenshots::Screen;
 
 mod render;
 
@@ -11,7 +11,7 @@ mod render;
     version,
     about = "Ambient lighting on neopixel devices."
 )]
-struct Args {
+struct Args {               
     /// Monitor to screen record
     #[arg(short, long, default_value_t = 0)]
     monitor: usize,
@@ -36,10 +36,10 @@ struct Args {
 fn main() {
     let args = Args::parse();
 
-    let monitors = Monitor::all().unwrap();
+    let monitors = Screen::all().unwrap();
 
-    let width = monitors.get(args.monitor).unwrap().width();
-    let height = monitors.get(args.monitor).unwrap().height();
+    let width = monitors[args.monitor].display_info.width;
+    let height = monitors[args.monitor].display_info.height;
 
     // first, connect to board with neobridge. jelly just calculates what colors are on the monitor.
     // then returns those values to the board.
@@ -52,9 +52,12 @@ fn main() {
     neobridge.show();
 
     // start loop here.
+    let screen = monitors[args.monitor];
+
     loop {
         // don't put image into a separate var, this prevents errors.
-        if let Ok(image) = monitors.get(args.monitor).unwrap().capture_image() {
+        if let Ok(image) = screen.capture_area(0, height as i32-((args.depth+1) as i32), width, args.depth as u32) {
+
             // first get the colors.
             let colors = jelly.grab(&image);
 

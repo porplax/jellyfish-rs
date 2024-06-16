@@ -1,4 +1,4 @@
-use image::{ImageBuffer, Pixel, Rgba};
+use screenshots::image::{ImageBuffer, Pixel, Rgba};
 use neobridge_rust::RGB;
 // without using any list, there was a 72.930% increase in performance.
 pub struct ChannelStorage {
@@ -42,7 +42,7 @@ impl ChannelStorage {
 
 pub struct JellyRenderer {
     width: u32,
-    height: u32,
+    _height: u32,
 
     n_of_leds: usize,
 
@@ -55,7 +55,7 @@ impl JellyRenderer {
     pub fn new(depth: usize, width: u32, height: u32, n_of_leds: usize) -> JellyRenderer {
         JellyRenderer {
             width,
-            height,
+            _height: height,
             
             n_of_leds,
 
@@ -68,22 +68,19 @@ impl JellyRenderer {
     pub fn grab(&mut self, image: &ImageBuffer<Rgba<u8>, Vec<u8>>) -> &Vec<RGB> {
         self.result.clear();
         let mut x: u32 = 0;
-        let mut _y: u32 = 0;
 
         // we want to get a certain amount of pixels at the bottom.
         for _row in 0..self.n_of_leds {
-            _y = self.height - 1;
 
             // we are getting a column of RGB values for each LED on a strip.
             // for example, if I have a depth of 10, 
             // then there will be 10 RGB values for each LED on a strip.
             let mut column: ChannelStorage = ChannelStorage::new(self.depth);
-            for _column in 0..self.depth {
-                let rgb_val: &Rgba<u8> = image.get_pixel(x, _y);
-
+            for y in 0..self.depth {
+                let rgb_val: &Rgba<u8> = image.get_pixel(x, y as u32);
+       
                 // to average over these later, go ahead and store these.
                 column.push(rgb_val.channels()[0], rgb_val.channels()[1], rgb_val.channels()[2]);
-                _y -= 1;
             }
 
             // every value (r, g, b) in the column is averaged into a single RGB. 
