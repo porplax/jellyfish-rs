@@ -75,16 +75,16 @@ impl JellyRenderer {
             // we are getting a column of RGB values for each LED on a strip.
             // for example, if I have a depth of 10, 
             // then there will be 10 RGB values for each LED on a strip.
-            let mut column: ChannelStorage = ChannelStorage::new(self.depth);
-            for y in 0..self.depth {
-                let rgb_val: &Rgba<u8> = image.get_pixel(x, y as u32);
+            let mut channels: ChannelStorage = ChannelStorage::new(self.depth);
+            for _column in 0..self.depth {
+                let rgb_val: &Rgba<u8> = image.get_pixel(x, _column as u32);
        
                 // to average over these later, go ahead and store these.
-                column.push(rgb_val.channels()[0], rgb_val.channels()[1], rgb_val.channels()[2]);
+                channels.push(rgb_val.channels()[0], rgb_val.channels()[1], rgb_val.channels()[2]);
             }
 
             // every value (r, g, b) in the column is averaged into a single RGB. 
-            let rgb: RGB = RGB(column.compile_r_channel_to_u8(), column.compile_g_channel_to_u8(), column.compile_b_channel_to_u8());
+            let rgb: RGB = RGB(channels.compile_r_channel_to_u8(), channels.compile_g_channel_to_u8(), channels.compile_b_channel_to_u8());
 
             self.result.push(rgb);
             x += self.width / self.n_of_leds as u32;
