@@ -65,9 +65,9 @@ Download `jellyfish-rs.exe` into a suitable location.
 - `<N_OF_LEDS>` - Number of LEDS on the strip
   
 **options:**
-- `-d, --depth <DEPTH> [default: 132]` - How many colors to capture (*less is more accurate, higher is more ambient*)
-- `-r, --refresh-rate <REFRESH_RATE> [default: 60]` - FPS of capture
-- `-p, --port <PORT> [default: COM3]` - Port of board
+- `-d, --depth <DEPTH>` - How many colors to capture (*less is more accurate, higher is more ambient*)
+- `-r, --refresh-rate <REFRESH_RATE>` - FPS of capture
+- `-p, --port <PORT>` - Port of board
   
 **example:** (*30 LEDs, depth of 16, FPS set to 165*)
 ```
