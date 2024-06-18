@@ -65,19 +65,14 @@ Download `jellyfish-rs.exe` into a suitable location.
 - `<N_OF_LEDS>` - Number of LEDS on the strip
   
 **options:**
-- `-d, --depth <DEPTH> [default: 132]` - How many colors to capture (*less is more accurate, higher is more ambient*)
-- `-r, --refresh-rate <REFRESH_RATE> [default: 60]` - FPS of capture
-- `-p, --port <PORT> [default: COM3]` - Port of board
+- `-d, --depth <DEPTH>` - How many colors to capture (*less is more accurate, higher is more ambient*)
+- `-r, --refresh-rate <REFRESH_RATE>` - FPS of capture
+- `-p, --port <PORT>` - Port of board
   
 **example:** (*30 LEDs, depth of 16, FPS set to 165*)
 ```
 ./jellyfish-rs.exe --monitor 0 30 --depth 16 --refresh-rate 165
 ```
-### ⏳optimizing⌛
-If you have a decent PC build, jellyfish should not take up an abundance of resources. However if you're suffering from heavy CPU load, here are some tips:
-- **Turn down FPS** (*usually this doesn't matter but can help on low-end systems*) 
-- **Lower depth** (*creates less computation for the CPU*)
-- **Force jellyfish on low priority or ECO** 
 
 ## 📃to-do list📃
 - [X] Automated installation script for circuitpython.
