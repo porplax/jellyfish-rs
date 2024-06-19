@@ -163,7 +163,7 @@ fn main() {
         );
 
         std::mem::drop(neobridge);
-        std::process::Command::new(format!(r"C:\Users\sayne\Programming\jellyfish-rs\target\release\jellyfish-rs.exe"))
+        std::process::Command::new(std::env::current_exe().unwrap().display().to_string())
                                     .args([
                                         format!("-p"),
                                         args.port,
