@@ -23,9 +23,9 @@
 
 ## 💫about this project💫 <a name = "about"></a>
 
-Wanted to***⭐spice up your setup?⭐*** Jellyfish reacts to what's on your monitor and controls Neopixels to copy what's on it. In other words, it's ambient lighting. 
+Wanted to***⭐spice up your setup?⭐*** Use jellyfish to add ambient lighting to your set-up! It uses serial communication and NeoPixels to achieve this effect. 
 
-It does this via **Neobridge**. It lets your PC to communicate to a circuitpython board. Sends RGB data and tells the board to control the Neopixels connected to the board.
+The PC does the color calculation at a *very low CPU cost*, and the NeoPixel only has to match itself to your computer monitor. 
 
 ## 🖋️getting started🖋️ <a name = "getting started"></a>
 
