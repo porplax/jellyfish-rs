@@ -158,7 +158,7 @@ fn main() {
 
     if args.run_in_background {
         term.cli_print(
-            term::Level::Info, 
+            term::Level::Warning, 
             "running in background..."
         );
 
