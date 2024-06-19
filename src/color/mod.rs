@@ -42,47 +42,47 @@ impl ColorOperation {
         let max: f32 = store.into_iter().reduce(f32::max).unwrap();
         let min: f32 = store.into_iter().reduce(f32::min).unwrap();
          */
-        let mut hue: f32 = 0.0;
-        let mut saturation: f32 = 0.0;
+        let mut _hue: f32 = 0.0;
+        let mut _saturation: f32 = 0.0;
         let value: f32 = max;
         
     
         let delta: f32 = max - min;
     
         if max != 0.0 {
-            saturation = delta / max;
+            _saturation = delta / max;
         } else {
             return *r
         }
     
         if r_f32 == max {
-            hue = (g_f32 - b_f32) / delta;
+            _hue = (g_f32 - b_f32) / delta;
         } else if g_f32 == max {
-            hue = 2.0 + (b_f32 - r_f32) / delta;
+            _hue = 2.0 + (b_f32 - r_f32) / delta;
         } else {
-            hue = 4.0 + (r_f32 - g_f32) / delta;
+            _hue = 4.0 + (r_f32 - g_f32) / delta;
         }
-        hue *= 60.0;
-        if hue < 0.0 {
-            hue += 360.0;
+        _hue *= 60.0;
+        if _hue < 0.0 {
+            _hue += 360.0;
         }
     
-        saturation *= scale;
+        _saturation *= scale;
     
-        if saturation == 0.0 {
+        if _saturation == 0.0 {
             return *r
         }
     
-        hue /= 60.0;
-        let i = f32::floor(hue);
-        let f = hue - i;
-        let p = value * (1.0 - saturation);
-        let q = value * (1.0 - saturation * f);
-        let t = value * (1.0 - saturation * (1.0 - f));
+        _hue /= 60.0;
+        let i = f32::floor(_hue);
+        let f = _hue - i;
+        let p = value * (1.0 - _saturation);
+        let q = value * (1.0 - _saturation * f);
+        let t = value * (1.0 - _saturation * (1.0 - f));
     
-        let mut r: u8 = 0;
-        let mut g: u8 = 0;
-        let mut b: u8 = 0;
+        let mut _r: u8 = 0;
+        let mut _g: u8 = 0;
+        let mut _b: u8 = 0;
         let (r, g, b) = match i as i32 {
             0 => (value, t, p),
             1 => (q, value, p),

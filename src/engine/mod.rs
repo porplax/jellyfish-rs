@@ -2,11 +2,9 @@ use neobridge_rust::RGB;
 use screenshots::image::{ImageBuffer, Pixel, Rgba};
 
 use crate::{
-    color::{self, ColorOption},
-    CalculationOption,
+    color, term::CalculationOption
 };
 
-// without using any list, there was a 72.930% increase in performance.
 pub struct ChannelStorage {
     expecting_size: usize,
 
@@ -105,7 +103,7 @@ impl JellyRenderer {
         height: u32,
         n_of_leds: usize,
         depth: usize,
-        color_option: ColorOption,
+        color_option: color::ColorOption,
         calc_option: CalculationOption,
     ) -> JellyRenderer {
         JellyRenderer {

@@ -1,11 +1,11 @@
 use clap::Parser;
-use color::ColorOption;
 use neobridge_rust::{Neobridge, RGB};
 use screenshots::Screen;
 use std::{process::exit, thread, time::Duration};
 
 mod color;
-mod render;
+mod engine;
+mod term;
 
 const RECOMMENDED_DEPTH_LIMIT: usize = 300;
 const VERSION: &str = env!("CARGO_PKG_VERSION");
@@ -54,43 +54,11 @@ struct Args {
     disable_color_operations: bool,
 }
 
-struct CalculationOption {
-    disable_color_operations: bool,
-}
-
-impl CalculationOption {
-    fn new(disable_color_operations: bool) -> CalculationOption {
-        CalculationOption {
-            disable_color_operations,
-        }
-    }
-}
-
-enum Level {
-    Info,
-    Warning,
-    Error,
-}
-
-impl Level {
-    fn colorize(self) -> String {
-        match self {
-            Self::Info => String::from(""),
-            Self::Warning => String::from("\u{001b}[33m"),
-            Self::Error => String::from("\u{001b}[31m"),
-        }
-    }
-}
-
-fn cli_print(level: Level, msg: &str) {
-    println!("{}{}\u{0001b}[0m", level.colorize(), msg);
-}
-
 fn main() {
     let args = Args::parse();
 
-    cli_print(
-        Level::Info,
+    term::Terminal::cli_print(
+        term::Level::Info,
         &format!(
 "jellyfish v{} | swish swish🪼",
             VERSION
@@ -103,8 +71,8 @@ fn main() {
     let height = monitors[args.monitor].display_info.height;
 
     if args.depth > RECOMMENDED_DEPTH_LIMIT && !(args.no_warnings) {
-        cli_print(
-            Level::Warning,
+        term::Terminal::cli_print(
+            term::Level::Warning,
             &format!(
                 "depth ({}) might be too expensive! consider lowering if CPU usage is too high.",
                 args.depth
@@ -113,16 +81,16 @@ fn main() {
     }
 
     if args.depth == 0 {
-        cli_print(
-            Level::Error,
+        term::Terminal::cli_print(
+            term::Level::Error,
             "you cannot have a depth of 0, this leaves nothing for me to process! >:(",
         );
         exit(0)
     }
 
     if args.brightness > 1.0 || args.brightness < 0.0 {
-        cli_print(
-            Level::Error,
+        term::Terminal::cli_print(
+            term::Level::Error,
             &format!(
                 "brightness ({}) must be between 0.0 and 1.0!",
                 args.brightness
@@ -131,8 +99,8 @@ fn main() {
         exit(0);
     }
 
-    cli_print(
-        Level::Info,
+    term::Terminal::cli_print(
+        term::Level::Info,
         &format!(
             "using monitor: {}; width: {}, height: {}",
             args.monitor, width, height
@@ -142,17 +110,17 @@ fn main() {
     // first, connect to board with neobridge. jelly just calculates what colors are on the monitor.
     // then returns those values to the board.
     let mut neobridge = Neobridge::new(&args.port, args.n_of_leds.try_into().unwrap());
-    let mut jelly: render::JellyRenderer = render::JellyRenderer::new(
+    let mut jelly: engine::JellyRenderer = engine::JellyRenderer::new(
         width,
         height,
         args.n_of_leds,
         args.depth,
-        ColorOption::new(args.brightness, args.saturation),
-        CalculationOption::new(args.disable_color_operations),
+        color::ColorOption::new(args.brightness, args.saturation),
+        term::CalculationOption::new(args.disable_color_operations),
     );
 
-    cli_print(
-        Level::Info,
+    term::Terminal::cli_print(
+        term::Level::Info,
         &format!(
             "connected to {} that has a number of {} LEDs.",
             args.port, args.n_of_leds
@@ -163,15 +131,15 @@ fn main() {
     neobridge.set_all(RGB(0, 0, 0));
     neobridge.show();
 
-    cli_print(
-        Level::Info,
+    term::Terminal::cli_print(
+        term::Level::Info,
         &format!("sent reset commands to {}, assuming board works", args.port),
     );
 
     // start loop here.
     let screen = monitors[args.monitor];
 
-    cli_print(Level::Info, "started capture!");
+    term::Terminal::cli_print(term::Level::Info, "started capture!");
     loop {
         // don't put image into a separate var, this prevents errors.
         if let Ok(image) = screen.capture_area(
