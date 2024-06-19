@@ -1,7 +1,7 @@
 use clap::Parser;
 use neobridge_rust::{Neobridge, RGB};
 use screenshots::Screen;
-use std::{process::exit, thread, time::Duration};
+use std::{fmt::format, process::exit, thread, time::Duration};
 
 mod color;
 mod engine;
@@ -49,15 +49,24 @@ struct Args {
     #[arg(long, default_value_t = false)]
     no_warnings: bool,
 
+    /// Enables slient mode
+    #[arg(long, default_value_t = false)]
+    slient_mode: bool,
+
     /// Disables color operations such as brightness, saturation, ...
     #[arg(long, default_value_t = false)]
     disable_color_operations: bool,
+
+    /// Run process in background
+    #[arg(long, default_value_t = false)]
+    run_in_background: bool,
 }
 
 fn main() {
-    let args = Args::parse();
+    let args: Args = Args::parse();
+    let term = term::Terminal::new(args.slient_mode);
 
-    term::Terminal::cli_print(
+    term.cli_print(
         term::Level::Info,
         &format!(
 "jellyfish v{} | swish swish🪼",
@@ -65,13 +74,13 @@ fn main() {
         ),
     );
 
-    let monitors = Screen::all().unwrap();
+    let monitors: Vec<Screen> = Screen::all().unwrap();
 
-    let width = monitors[args.monitor].display_info.width;
-    let height = monitors[args.monitor].display_info.height;
+    let width: u32 = monitors[args.monitor].display_info.width;
+    let height: u32 = monitors[args.monitor].display_info.height;
 
     if args.depth > RECOMMENDED_DEPTH_LIMIT && !(args.no_warnings) {
-        term::Terminal::cli_print(
+        term.cli_print(
             term::Level::Warning,
             &format!(
                 "depth ({}) might be too expensive! consider lowering if CPU usage is too high.",
@@ -81,7 +90,7 @@ fn main() {
     }
 
     if args.depth == 0 {
-        term::Terminal::cli_print(
+        term.cli_print(
             term::Level::Error,
             "you cannot have a depth of 0, this leaves nothing for me to process! >:(",
         );
@@ -89,7 +98,7 @@ fn main() {
     }
 
     if args.brightness > 1.0 || args.brightness < 0.0 {
-        term::Terminal::cli_print(
+        term.cli_print(
             term::Level::Error,
             &format!(
                 "brightness ({}) must be between 0.0 and 1.0!",
@@ -100,7 +109,7 @@ fn main() {
     }
 
     if args.saturation > 1.0 || args.saturation < 0.0 {
-        term::Terminal::cli_print(
+        term.cli_print(
             term::Level::Error, 
             &format!(
                 "saturation ({}) must be between 0.0 and 1.0!",
@@ -110,7 +119,7 @@ fn main() {
         exit(0);
     }
 
-    term::Terminal::cli_print(
+    term.cli_print(
         term::Level::Info,
         &format!(
             "using monitor: {}; width: {}, height: {}",
@@ -120,7 +129,7 @@ fn main() {
 
     // first, connect to board with neobridge. jelly just calculates what colors are on the monitor.
     // then returns those values to the board.
-    let mut neobridge = Neobridge::new(&args.port, args.n_of_leds.try_into().unwrap());
+    let mut neobridge: Neobridge = Neobridge::new(&args.port, args.n_of_leds.try_into().unwrap());
     let mut jelly: engine::JellyRenderer = engine::JellyRenderer::new(
         width,
         height,
@@ -130,7 +139,7 @@ fn main() {
         term::CalculationOption::new(args.disable_color_operations),
     );
 
-    term::Terminal::cli_print(
+    term.cli_print(
         term::Level::Info,
         &format!(
             "connected to {} that has a number of {} LEDs.",
@@ -142,15 +151,46 @@ fn main() {
     neobridge.set_all(RGB(0, 0, 0));
     neobridge.show();
 
-    term::Terminal::cli_print(
+    term.cli_print(
         term::Level::Info,
         &format!("sent reset commands to {}, assuming board works", args.port),
     );
 
-    // start loop here.
-    let screen = monitors[args.monitor];
+    if args.run_in_background {
+        term.cli_print(
+            term::Level::Info, 
+            "running in background..."
+        );
 
-    term::Terminal::cli_print(term::Level::Info, "started capture!");
+        std::mem::drop(neobridge);
+        std::process::Command::new(format!(r"C:\Users\sayne\Programming\jellyfish-rs\target\release\jellyfish-rs.exe"))
+                                    .args([
+                                        format!("-p"),
+                                        args.port,
+                                        format!("-n"),
+                                        args.n_of_leds.to_string(), 
+                                        format!("-r"),
+                                        args.refresh_rate.to_string(),
+                                        format!("-d"),
+                                        args.depth.to_string(),
+                                        format!("-m"),
+                                        args.monitor.to_string(),
+                                        format!("--brightness"),
+                                        args.brightness.to_string(),
+                                        format!("--saturation"),
+                                        args.saturation.to_string(),
+                                        "--slient-mode".to_string()
+                                        ],
+                                    )
+                                    .spawn()
+                                    .expect("failed to run in background");
+        exit(0)
+    }
+
+    // start loop here.
+    let screen: Screen = monitors[args.monitor];
+
+    term.cli_print(term::Level::Info, "started capture!");
     loop {
         // don't put image into a separate var, this prevents errors.
         if let Ok(image) = screen.capture_area(
@@ -160,7 +200,7 @@ fn main() {
             args.depth as u32,
         ) {
             // first get the colors.
-            let colors = jelly.grab(&image);
+            let colors: &Vec<RGB> = jelly.grab(&image);
 
             // then send it to the board.
             neobridge.set_list(colors);

@@ -26,10 +26,19 @@ impl Level {
     }
 }
 
-pub struct Terminal();
+#[derive(Debug, Clone, Copy)]
+pub struct Terminal {
+    slient_mode: bool,
+}
 
 impl Terminal {
-    pub fn cli_print(level: Level, msg: &str) {
+    pub fn new(slient_mode: bool) -> Terminal {
+        Terminal {
+            slient_mode
+        }
+    }
+    pub fn cli_print(self, level: Level, msg: &str) {
+        if self.slient_mode {return;}
         println!("{}{}\u{0001b}[0m", level.colorize(), msg);
     }   
 }
