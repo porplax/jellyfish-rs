@@ -26,91 +26,72 @@ impl ColorOperation {
     // https://stackoverflow.com/questions/13806483/increase-or-decrease-color-saturation
     pub fn set_saturation(r: &RGB, scale: f32) -> RGB{
         // i have to convert each u8 value to a float.
-        let store: Vec<f32> = vec![
+        let r_f32: f32 = f32::from(r.0) / 255.0; 
+        let g_f32: f32 = f32::from(r.1) / 255.0; 
+        let b_f32: f32 = f32::from(r.2) / 255.0; 
+        let max: f32 = f32::max(f32::max(r_f32, g_f32), b_f32);
+        let min: f32 = f32::min(f32::min(r_f32, g_f32), b_f32);
+    
+        
+        /* let store: Arc<[f32; 3]> = Arc::new([
             f32::from(r.0) / 255.0,
             f32::from(r.1) / 255.0,
             f32::from(r.2) / 255.0,
-        ];
-
-        // TODO: i got move errors here, i cloned for now but this isn't efficient!!!
-        let max: f32 = store.clone().into_iter().reduce(f32::max).unwrap();
-        let min: f32 = store.clone().into_iter().reduce(f32::min).unwrap();
-        
-        let mut _hue: f32 = 0.0;
-        let mut _saturation: f32 = 0.0;
+        ]);
+    
+        let max: f32 = store.into_iter().reduce(f32::max).unwrap();
+        let min: f32 = store.into_iter().reduce(f32::min).unwrap();
+         */
+        let mut hue: f32 = 0.0;
+        let mut saturation: f32 = 0.0;
         let value: f32 = max;
         
-
+    
         let delta: f32 = max - min;
-
+    
         if max != 0.0 {
-            _saturation = delta / max;
+            saturation = delta / max;
         } else {
-            _saturation = 0.0;
-            _hue = -1.0;
             return RGB(0, 0, 0)
         }
-
-        if store[0] == max {
-            _hue = (store[1] - store[2]) / delta;
-        } else if store[1] == max {
-            _hue = 2.0 + (store[2] - store[0]) / delta;
+    
+        if r_f32 == max {
+            hue = (g_f32 - b_f32) / delta;
+        } else if g_f32 == max {
+            hue = 2.0 + (b_f32 - r_f32) / delta;
         } else {
-            _hue = 4.0 + (store[0] - store[1]) / delta;
+            hue = 4.0 + (r_f32 - g_f32) / delta;
         }
-        _hue *= 60.0;
-        if _hue < 0.0 {
-            _hue += 360.0;
+        hue *= 60.0;
+        if hue < 0.0 {
+            hue += 360.0;
         }
-
-        if f32::is_nan(_hue) {
-            _hue = 0.0;
-        }
-
-        _saturation *= scale;
-
-        if _saturation == 0.0 {
+    
+        saturation *= scale;
+    
+        if saturation == 0.0 {
             return RGB(0, 0, 0)
         }
-
-        _hue /= 60.0;
-        let i = f32::floor(_hue);
-        let f = _hue - i;
-        let p = value * (1.0 - _saturation);
-        let q = value * (1.0 - _saturation * f);
-        let t = value * (1.0 - _saturation * (1.0 - f));
-
-        let mut _r: u8 = 0;
-        let mut _g: u8 = 0;
-        let mut _b: u8 = 0;
-        match i {
-            0.0 => {
-                _r = (value*255.0) as u8;
-                _g = (t*255.0) as u8;
-                _b = (p*255.0) as u8;
-            },
-            1.0 => {
-                _r = (q*255.0) as u8;
-                _g = (value*255.0) as u8;
-                _b = (p*255.0) as u8;
-            }
-            2.0 => {
-                _r = (p*255.0) as u8;
-                _g = (value*255.0) as u8;
-                _b = (t*255.0) as u8;
-            }
-            3.0 => {
-                _r = (p*255.0) as u8;
-                _g = (q*255.0) as u8;
-                _b = (value*255.0) as u8;
-            }
-            4.0 => {
-                _r = (t*255.0) as u8;
-                _g = (p*255.0) as u8;
-                _b = (value*255.0) as u8;
-            }
-            _ => {_r=(value*255.0) as u8;_g=(p*255.0) as u8;_b=(q*255.0) as u8}
-        }
-        RGB(_r, _g, _b)
+    
+        hue /= 60.0;
+        let i = f32::floor(hue);
+        let f = hue - i;
+        let p = value * (1.0 - saturation);
+        let q = value * (1.0 - saturation * f);
+        let t = value * (1.0 - saturation * (1.0 - f));
+    
+        let mut r: u8 = 0;
+        let mut g: u8 = 0;
+        let mut b: u8 = 0;
+        let (r, g, b) = match i as i32 {
+            0 => (value, t, p),
+            1 => (q, value, p),
+            2 => (p, value, t),
+            3 => (p, q, value),
+            4 => (t, p, value),
+            _ => (value, p, q),
+        };
+    
+        RGB((r * 255.0) as u8, (g * 255.0) as u8, (b * 255.0) as u8)
     }
 }
