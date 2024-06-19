@@ -1,7 +1,7 @@
 use clap::Parser;
 use neobridge_rust::{Neobridge, RGB};
 use screenshots::Screen;
-use std::{fmt::format, process::exit, thread, time::Duration};
+use std::{process::exit, thread, time::Duration};
 
 mod color;
 mod engine;
@@ -56,10 +56,6 @@ struct Args {
     /// Disables color operations such as brightness, saturation, ...
     #[arg(long, default_value_t = false)]
     disable_color_operations: bool,
-
-    /// Run process in background
-    #[arg(long, default_value_t = false)]
-    run_in_background: bool,
 }
 
 fn main() {
@@ -155,37 +151,6 @@ fn main() {
         term::Level::Info,
         &format!("sent reset commands to {}, assuming board works", args.port),
     );
-
-    if args.run_in_background {
-        term.cli_print(
-            term::Level::Warning, 
-            "running in background..."
-        );
-
-        std::mem::drop(neobridge);
-        std::process::Command::new(std::env::current_exe().unwrap().display().to_string())
-                                    .args([
-                                        format!("-p"),
-                                        args.port,
-                                        format!("-n"),
-                                        args.n_of_leds.to_string(), 
-                                        format!("-r"),
-                                        args.refresh_rate.to_string(),
-                                        format!("-d"),
-                                        args.depth.to_string(),
-                                        format!("-m"),
-                                        args.monitor.to_string(),
-                                        format!("--brightness"),
-                                        args.brightness.to_string(),
-                                        format!("--saturation"),
-                                        args.saturation.to_string(),
-                                        "--slient-mode".to_string()
-                                        ],
-                                    )
-                                    .spawn()
-                                    .expect("failed to run in background");
-        exit(0)
-    }
 
     // start loop here.
     let screen: Screen = monitors[args.monitor];
