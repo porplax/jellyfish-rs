@@ -799,9 +799,9 @@ dependencies = [
 
 [[package]]
 name = "neobridge-rust"
-version = "0.1.7"
+version = "0.1.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "785c47dc85b6341d93ddc09bb3248c715e43801aa15849f70cc8d911829fd8b0"
+checksum = "0d113e403df7c8f188d65586d93e3bb809310cfa3a305e4c476b2421118b69d8"
 dependencies = [
  "serialport",
 ]

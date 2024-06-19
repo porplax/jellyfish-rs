@@ -52,7 +52,7 @@ impl ColorOperation {
         if max != 0.0 {
             saturation = delta / max;
         } else {
-            return RGB(0, 0, 0)
+            return *r
         }
     
         if r_f32 == max {
@@ -70,7 +70,7 @@ impl ColorOperation {
         saturation *= scale;
     
         if saturation == 0.0 {
-            return RGB(0, 0, 0)
+            return *r
         }
     
         hue /= 60.0;
