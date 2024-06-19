@@ -23,7 +23,7 @@ impl ColorOperation {
         )
     }
 
-    // https://stackoverflow.com/questions/13806483/increase-or-decrease-color-saturation
+    // https://stackoverflow.com/questions/13806483/increase-or-decrease-color-saturation (thank you @Hoffmann!!!)
     pub fn set_saturation(r: &RGB, scale: f32) -> RGB{
         // i have to convert each u8 value to a float.
         let r_f32: f32 = f32::from(r.0) / 255.0; 
