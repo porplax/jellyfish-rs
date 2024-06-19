@@ -42,7 +42,7 @@ struct Args {
     brightness: f32,
 
     /// Saturation of LED strip
-    #[arg(long, default_value_t = 5.0)]
+    #[arg(long, default_value_t = 0.0)]
     saturation: f32,
 
     /// Remove warnings
@@ -94,6 +94,17 @@ fn main() {
             &format!(
                 "brightness ({}) must be between 0.0 and 1.0!",
                 args.brightness
+            ),
+        );
+        exit(0);
+    }
+
+    if args.saturation > 1.0 || args.saturation < 0.0 {
+        term::Terminal::cli_print(
+            term::Level::Error, 
+            &format!(
+                "saturation ({}) must be between 0.0 and 1.0!",
+                args.saturation
             ),
         );
         exit(0);

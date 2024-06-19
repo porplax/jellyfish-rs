@@ -67,7 +67,7 @@ impl ColorOperation {
             _hue += 360.0;
         }
     
-        _saturation *= scale;
+        _saturation *= 10.0*scale;
     
         if _saturation == 0.0 {
             return *r
