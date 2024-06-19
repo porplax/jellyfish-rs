@@ -1,8 +1,10 @@
-use screenshots::image::{ImageBuffer, Pixel, Rgba};
 use neobridge_rust::RGB;
+use screenshots::image::{ImageBuffer, Pixel, Rgba};
 
-use crate::{color::{self, ColorOption}, CalculationOption};
-
+use crate::{
+    color::{self, ColorOption},
+    CalculationOption,
+};
 
 // without using any list, there was a 72.930% increase in performance.
 pub struct ChannelStorage {
@@ -18,7 +20,7 @@ pub struct ChannelStorage {
 
     low_r: u8,
     low_g: u8,
-    low_b: u8
+    low_b: u8,
 }
 
 impl ChannelStorage {
@@ -36,7 +38,7 @@ impl ChannelStorage {
 
             low_r: 255,
             low_g: 255,
-            low_b: 255
+            low_b: 255,
         }
     }
 
@@ -55,8 +57,15 @@ impl ChannelStorage {
     }
 
     fn push(&mut self, r: u8, g: u8, b: u8) {
-        if r > self.high_r && g > self.high_g && b > self.high_b {self.high_r = r;self.high_g = g;self.high_b = b}
-        else if r < self.low_r && g < self.low_g && b < self.low_b {self.low_r = r;self.low_g = g;self.low_b = b}
+        if r > self.high_r && g > self.high_g && b > self.high_b {
+            self.high_r = r;
+            self.high_g = g;
+            self.high_b = b
+        } else if r < self.low_r && g < self.low_g && b < self.low_b {
+            self.low_r = r;
+            self.low_g = g;
+            self.low_b = b
+        }
 
         self.sum_of_r = self.sum_of_r + r as u16;
         self.sum_of_g = self.sum_of_g + g as u16;
@@ -74,7 +83,6 @@ impl ChannelStorage {
     fn compile_b_channel_to_u8(&mut self) -> u8 {
         (self.sum_of_b / self.expecting_size as u16) as u8
     }
-
 }
 
 pub struct JellyRenderer {
@@ -88,22 +96,29 @@ pub struct JellyRenderer {
     color_option: color::ColorOption,
     calc_option: CalculationOption,
 
-    result: Vec<RGB>
+    result: Vec<RGB>,
 }
 
 impl JellyRenderer {
-    pub fn new(width: u32, height: u32, n_of_leds: usize, depth: usize, color_option: ColorOption, calc_option: CalculationOption) -> JellyRenderer {
+    pub fn new(
+        width: u32,
+        height: u32,
+        n_of_leds: usize,
+        depth: usize,
+        color_option: ColorOption,
+        calc_option: CalculationOption,
+    ) -> JellyRenderer {
         JellyRenderer {
             width,
             _height: height,
-            
+
             n_of_leds,
             depth,
 
             color_option,
             calc_option,
 
-            result: Vec::with_capacity(0)
+            result: Vec::with_capacity(0),
         }
     }
 
@@ -114,22 +129,30 @@ impl JellyRenderer {
         // we want to get a certain amount of pixels at the bottom.
         let mut channels: ChannelStorage = ChannelStorage::new(self.depth);
         for _row in 0..self.n_of_leds {
-
             // we are getting a column of RGB values for each LED on a strip.
-            // for example, if I have a depth of 10, 
+            // for example, if I have a depth of 10,
             // then there will be 10 RGB values for each LED on a strip.
             channels.clear();
             for _column in 0..self.depth {
                 let rgb_val: &Rgba<u8> = image.get_pixel(x, _column as u32);
-       
+
                 // to average over these later, go ahead and store these.
-                channels.push(rgb_val.channels()[0], rgb_val.channels()[1], rgb_val.channels()[2]);
+                channels.push(
+                    rgb_val.channels()[0],
+                    rgb_val.channels()[1],
+                    rgb_val.channels()[2],
+                );
             }
 
-            // every value (r, g, b) in the column is averaged into a single RGB. 
-            let mut rgb: RGB = RGB(channels.compile_r_channel_to_u8(), channels.compile_g_channel_to_u8(), channels.compile_b_channel_to_u8());
-            
+            // every value (r, g, b) in the column is averaged into a single RGB.
+            let mut rgb: RGB = RGB(
+                channels.compile_r_channel_to_u8(),
+                channels.compile_g_channel_to_u8(),
+                channels.compile_b_channel_to_u8(),
+            );
+
             if !(self.calc_option.disable_color_operations) {
+                rgb = color::ColorOperation::set_saturation(&rgb, self.color_option.saturation);
                 rgb = color::ColorOperation::set_brightness(&rgb, self.color_option.brightness);
             }
 
@@ -137,8 +160,6 @@ impl JellyRenderer {
             x += self.width / self.n_of_leds as u32;
         }
 
-    &self.result
+        &self.result
     }
-
-  
 }
