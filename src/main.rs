@@ -23,7 +23,8 @@ struct JellyfishApp {
     brightness: f32,
     saturation: f32,
 
-    port: String
+    port: String,
+    running: bool
 }
 
 impl Default for JellyfishApp {
@@ -39,7 +40,8 @@ impl Default for JellyfishApp {
             brightness: 1.0,
             saturation: 0.2,
 
-            port: String::from("COM3")
+            port: String::from("COM3"),
+            running: false
         }
     }
 }
@@ -81,7 +83,8 @@ impl eframe::App for JellyfishApp {
                 ui.add(egui::DragValue::new(&mut self.saturation).speed(0.005).clamp_range(0.0..=1.0)).on_hover_text_at_pointer("Saturation of each LED.");
             });
 
-            if ui.button(RichText::new("run!").heading().italics().color(egui::Color32::GREEN)).clicked() {
+            if ui.button(RichText::new("run!")).clicked() {
+                self.running = true;
                 let b: JellyfishApp = self.clone();
                 let r: thread::JoinHandle<_> = std::thread::spawn(move || {
                     let width: u32 = b.monitors[b.m_idx].display_info.width;
@@ -120,6 +123,12 @@ impl eframe::App for JellyfishApp {
                     }
                 });
                 drop(r);
+            }
+
+            if self.running {
+                ui.label(RichText::new("running!").color(egui::Color32::GREEN).monospace().small());
+            } else {
+                ui.label(RichText::new("waiting for user...").color(egui::Color32::RED).monospace().small());
             }
         });
     }
