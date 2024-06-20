@@ -143,41 +143,7 @@ fn main() -> Result<(), eframe::Error> {
         &format!("jellyfish! v{}", VERSION),
         options,
         Box::new(|cc| {
-            egui_extras::install_image_loaders(&cc.egui_ctx);
-
-            // https://github.com/emilk/egui/discussions/737#discussioncomment-8830140
-                let winit::raw_window_handle::RawWindowHandle::Win32(handle) = cc.window_handle().unwrap().as_raw() else {
-                    panic!("Unsupported platform");
-                };
-        
-                let context: egui::Context = cc.egui_ctx.clone();
-
-                TrayIconEvent::set_event_handler(Some(move |event: TrayIconEvent| {
-                    println!("TrayIconEvent: {:?}", event);
-        
-                    // Just a static Mutex<bool>
-                    let mut visible: bool = true;
-        
-                    if visible {
-                        let window_handle = windows::Win32::Foundation::HWND(handle.hwnd.into());
-                        let hide = windows::Win32::UI::WindowsAndMessaging::SW_HIDE;
-                        unsafe {
-                            windows::Win32::UI::WindowsAndMessaging::ShowWindow(window_handle, hide);
-                        }
-                        visible = false;
-                    } else {
-                        let window_handle = windows::Win32::Foundation::HWND(handle.hwnd.into());
-                        // You can show the window in all sorts of ways:
-                        // https://learn.microsoft.com/en-gb/windows/win32/api/winuser/nf-winuser-showwindow
-                        let show = windows::Win32::UI::WindowsAndMessaging::SW_SHOWDEFAULT;
-                        unsafe {
-                            windows::Win32::UI::WindowsAndMessaging::ShowWindow(window_handle, show);
-                        }
-                        visible = true;
-                    
-                }
-                }));
-            
+            egui_extras::install_image_loaders(&cc.egui_ctx);     
 
             Box::<JellyfishApp>::default()
         }),

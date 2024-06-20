@@ -56,24 +56,6 @@ Before you can run the jellyfish program, you'll need a circuitpython board to r
 
 Download `jellyfish-rs.exe` into a suitable location.
 
-## 🚥usage🚥 <a name="usage"></a>
-```
-./jellyfish-rs.exe [OPTIONS] --monitor <MONITOR> <N_OF_LEDS>
-```
-**arguments:**
-- `-m, --monitor <MONITOR>` - Which monitor to capture from
-- `<N_OF_LEDS>` - Number of LEDS on the strip
-  
-**options:**
-- `-d, --depth <DEPTH>` - How many colors to capture (*less is more accurate, higher is more ambient*)
-- `-r, --refresh-rate <REFRESH_RATE>` - FPS of capture
-- `-p, --port <PORT>` - Port of board
-  
-**example:** (*30 LEDs, depth of 16, FPS set to 165*)
-```
-./jellyfish-rs.exe --monitor 0 30 --depth 16 --refresh-rate 165
-```
-
 ## 📃to-do list📃
 - [X] Automated installation script for circuitpython.
 - [ ] Contribution section.
