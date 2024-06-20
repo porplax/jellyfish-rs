@@ -1,17 +1,14 @@
 #![windows_subsystem = "windows"]
-use eframe::{egui, HardwareAcceleration};
-use egui::{IconData, RichText};
+use eframe::egui;
+use egui::RichText;
 use neobridge_rust::{Neobridge, RGB};
 use screenshots::Screen;
-use tray_icon::TrayIconEvent;
-use winit::{raw_window_handle::HasWindowHandle, window::Icon};
-use std::{ops::Deref, process::exit, thread, time::Duration};
+use std::{thread, time::Duration};
 
 mod color;
 mod engine;
 mod term;
 
-const RECOMMENDED_DEPTH_LIMIT: usize = 300;
 const VERSION: &str = env!("CARGO_PKG_VERSION");
 
 #[derive(Clone)]
