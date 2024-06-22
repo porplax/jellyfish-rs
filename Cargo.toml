@@ -12,6 +12,13 @@ screenshots = "0.8.10"
 eframe = "0.27.2"
 egui_extras = "0.27.2"
 image = "0.24.2"
+tray-icon = "0.12.0"
+windows-sys = "0.52.0"
+winit = "*"
+
+[dependencies.windows]
+version = "0.52"
+features = ["Win32_UI", "Win32_UI_WindowsAndMessaging"]
 
 [profile.release]
 lto = true

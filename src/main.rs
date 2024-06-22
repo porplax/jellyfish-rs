@@ -1,9 +1,16 @@
-#![windows_subsystem = "windows"]
 use eframe::egui;
 use egui::RichText;
 use neobridge_rust::{Neobridge, RGB};
 use screenshots::Screen;
-use std::{thread, time::Duration};
+
+use std::{
+    sync::{
+        atomic::{AtomicBool, Ordering},
+        Arc, 
+    },
+    thread,
+    time::Duration,
+};
 
 mod color;
 mod engine;
@@ -24,7 +31,60 @@ struct JellyfishApp {
     saturation: f32,
 
     port: String,
-    running: bool
+    running: Arc<AtomicBool>,
+}
+
+impl JellyfishApp {
+    fn run(self) {
+        let b: JellyfishApp = self.clone();
+        let r: thread::JoinHandle<_> = std::thread::spawn({
+            let running = self.running.clone();
+
+            move || {
+                let width: u32 = b.monitors[b.m_idx].display_info.width;
+                let height: u32 = b.monitors[b.m_idx].display_info.height;
+
+                let mut neobridge: Neobridge =
+                    Neobridge::new(&b.port, b.n_of_leds.try_into().unwrap());
+                let mut jelly: engine::JellyRenderer = engine::JellyRenderer::new(
+                    width,
+                    height,
+                    b.n_of_leds,
+                    b.depth,
+                    color::ColorOption::new(b.brightness, b.saturation),
+                    term::CalculationOption::new(false),
+                );
+
+                neobridge.set_all(RGB(0, 0, 0));
+                neobridge.show();
+
+                let screen: Screen = b.monitors[b.m_idx];
+
+                loop {
+                    if !running.load(Ordering::SeqCst) {
+                        neobridge.set_all(RGB(0, 0, 0));
+                        neobridge.show();
+                        return;
+                    }
+                    if let Ok(image) = screen.capture_area(
+                        0,
+                        height as i32 - ((b.depth + 1) as i32),
+                        width,
+                        b.depth as u32,
+                    ) {
+                        let colors: &Vec<RGB> = jelly.grab(&image);
+
+                        // then send it to the board.
+                        neobridge.set_list(colors);
+                        neobridge.show();
+                    }
+
+                    thread::sleep(Duration::from_millis(1000 / b.refresh_rate));
+                }
+            }
+        });
+        drop(r);
+    }
 }
 
 impl Default for JellyfishApp {
@@ -41,7 +101,7 @@ impl Default for JellyfishApp {
             saturation: 0.2,
 
             port: String::from("COM3"),
-            running: false
+            running: Arc::new(AtomicBool::new(false)),
         }
     }
 }
@@ -51,106 +111,115 @@ impl eframe::App for JellyfishApp {
         egui::CentralPanel::default().show(ctx, |ui| {
             ui.heading("jellyfish!");
             ui.label(&format!("v{}", VERSION));
+            if self.running.load(Ordering::Relaxed) {
+                ui.label(
+                    RichText::new("running!")
+                        .color(egui::Color32::GREEN)
+                        .monospace()
+                        .small(),
+                );
+            } else {
+                ui.label(
+                    RichText::new("waiting for user...")
+                        .color(egui::Color32::RED)
+                        .monospace()
+                        .small(),
+                );
+            }
             ui.separator();
-            
+
             ui.horizontal(|ui| {
                 ui.label("port:");
-                ui.text_edit_singleline(&mut self.port).highlight().on_hover_text_at_pointer("Which port serial is located on.");
+                ui.text_edit_singleline(&mut self.port)
+                    .highlight()
+                    .on_hover_text_at_pointer("Which port serial is located on.");
             });
 
             ui.horizontal(|ui| {
                 ui.label("monitor:");
-                ui.add(egui::Slider::new(&mut self.m_idx, 0..=self.monitors.len()-1)).on_hover_text_at_pointer("Which monitor to use.");
+                ui.add(egui::Slider::new(
+                    &mut self.m_idx,
+                    0..=self.monitors.len() - 1,
+                ))
+                .on_hover_text_at_pointer("Which monitor to use.");
             });
 
             ui.horizontal(|ui| {
                 ui.label("depth:");
-                ui.add(egui::DragValue::new(&mut self.depth).speed(1).clamp_range(0..=self.monitors[self.m_idx].display_info.height/2)).on_hover_text_at_pointer("How many pixels to calculate for each LED.");
-                
+                ui.add(
+                    egui::DragValue::new(&mut self.depth)
+                        .speed(1)
+                        .clamp_range(0..=self.monitors[self.m_idx].display_info.height / 2),
+                )
+                .on_hover_text_at_pointer("How many pixels to calculate for each LED.");
+
                 ui.label("# of leds:");
-                ui.add(egui::DragValue::new(&mut self.n_of_leds).speed(1)).on_hover_text_at_pointer("How many LEDs are present on the strip.");
+                ui.add(egui::DragValue::new(&mut self.n_of_leds).speed(1))
+                    .on_hover_text_at_pointer("How many LEDs are present on the strip.");
 
                 ui.label("refresh rate:");
-                ui.add(egui::DragValue::new(&mut self.refresh_rate).speed(1)).on_hover_text_at_pointer("How fast the program should run.");
+                ui.add(egui::DragValue::new(&mut self.refresh_rate).speed(1))
+                    .on_hover_text_at_pointer("How fast the program should run.");
             });
             ui.separator();
 
             ui.horizontal(|ui| {
                 ui.label("brightness:");
-                ui.add(egui::DragValue::new(&mut self.brightness).speed(0.005).clamp_range(0.0..=1.0)).on_hover_text_at_pointer("Brightness of each LED.");
+                ui.add(
+                    egui::DragValue::new(&mut self.brightness)
+                        .speed(0.005)
+                        .clamp_range(0.0..=1.0),
+                )
+                .on_hover_text_at_pointer("Brightness of each LED.");
 
                 ui.label("saturation:");
-                ui.add(egui::DragValue::new(&mut self.saturation).speed(0.005).clamp_range(0.0..=1.0)).on_hover_text_at_pointer("Saturation of each LED.");
+                ui.add(
+                    egui::DragValue::new(&mut self.saturation)
+                        .speed(0.005)
+                        .clamp_range(0.0..=1.0),
+                )
+                .on_hover_text_at_pointer("Saturation of each LED.");
             });
 
-            if ui.button(RichText::new("run!")).clicked() {
-                self.running = true;
-                let b: JellyfishApp = self.clone();
-                let r: thread::JoinHandle<_> = std::thread::spawn(move || {
-                    let width: u32 = b.monitors[b.m_idx].display_info.width;
-                    let height: u32 = b.monitors[b.m_idx].display_info.height;
+            ui.horizontal(|ui| {
+                if ui.button(RichText::new("run!")).clicked()
+                    && !self.running.load(Ordering::Relaxed)
+                {
+                    self.running = Arc::new(AtomicBool::new(true));
+                    <JellyfishApp as Clone>::clone(&self).run();
+                }
 
-                    let mut neobridge: Neobridge = Neobridge::new(&b.port, b.n_of_leds.try_into().unwrap());
-                    let mut jelly: engine::JellyRenderer = engine::JellyRenderer::new(
-                        width,
-                        height,
-                        b.n_of_leds,
-                        b.depth,
-                        color::ColorOption::new(b.brightness, b.saturation),
-                        term::CalculationOption::new(false),
-                    );
-
-                    neobridge.set_all(RGB(0, 0, 0));
-                    neobridge.show();
-
-                    let screen: Screen = b.monitors[b.m_idx];
-
-                    loop {
-                        if let Ok(image) = screen.capture_area(
-                            0,
-                            height as i32 - ((b.depth + 1) as i32),
-                            width,
-                            b.depth as u32,
-                        ) {
-                            let colors: &Vec<RGB> = jelly.grab(&image);
-                
-                            // then send it to the board.
-                            neobridge.set_list(colors);
-                            neobridge.show();
-                        }
-                
-                        thread::sleep(Duration::from_millis(1000 / b.refresh_rate));
+                if self.running.load(Ordering::Relaxed) {
+                    if ui.button("stop!").clicked() {
+                        self.running.store(false, Ordering::SeqCst);
                     }
-                });
-                drop(r);
-            }
-
-            if self.running {
-                ui.label(RichText::new("running!").color(egui::Color32::GREEN).monospace().small());
-            } else {
-                ui.label(RichText::new("waiting for user...").color(egui::Color32::RED).monospace().small());
-            }
+                }
+            });
         });
     }
 }
 
 fn main() -> Result<(), eframe::Error> {
-
     let options = eframe::NativeOptions {
-        viewport: egui::ViewportBuilder::default().with_icon(egui::IconData {
-            rgba: image::open(r"assets\jellyfish.png").expect("failed").to_rgba8().into_raw(),
-            width: 160,
-            height: 160,
-        }).with_inner_size([400.0, 200.0]).with_resizable(false),
+        viewport: egui::ViewportBuilder::default()
+            .with_icon(egui::IconData {
+                rgba: image::open(r"assets\jellyfish.png")
+                    .expect("failed")
+                    .to_rgba8()
+                    .into_raw(),
+                width: 160,
+                height: 160,
+            })
+            .with_inner_size([400.0, 200.0])
+            .with_resizable(false),
         ..Default::default()
-        
     };
     eframe::run_native(
         &format!("jellyfish! v{}", VERSION),
         options,
-        Box::new(|cc| {
-            egui_extras::install_image_loaders(&cc.egui_ctx);     
-
+        Box::new(|cc: &eframe::CreationContext| {
+            egui_extras::install_image_loaders(&cc.egui_ctx);
+           
             Box::<JellyfishApp>::default()
         }),
     )
