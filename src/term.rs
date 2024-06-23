@@ -19,21 +19,21 @@ impl CalculationOption {
 
 
 impl JellyfishApp {
-    pub fn run(self) {
+    pub fn run(&mut self) {
         let b: JellyfishApp = self.clone();
         let r: thread::JoinHandle<_> = std::thread::spawn({
             let running = self.running.clone();
             move || {
-                let width: u32 = b.monitors[b.m_idx].display_info.width;
-                let height: u32 = b.monitors[b.m_idx].display_info.height;
+                let width: u32 = b.monitors[b.monitor_index].display_info.width;
+                let height: u32 = b.monitors[b.monitor_index].display_info.height;
 
                 let mut neobridge: Neobridge =
-                    Neobridge::new(&b.port, b.n_of_leds.try_into().unwrap());
+                    Neobridge::new(&b.port, b.number_of_leds.try_into().unwrap());
                 let mut jelly: engine::JellyRenderer = engine::JellyRenderer::new(
                     width,
                     height,
-                    b.n_of_leds,
-                    b.depth,
+                    b.number_of_leds,
+                    b.depth_per_led,
                     calc::ColorOption::new(b.brightness, b.saturation),
                     CalculationOption::new(false),
                 );
@@ -41,7 +41,7 @@ impl JellyfishApp {
                 neobridge.set_all(RGB(0, 0, 0));
                 neobridge.show();
 
-                let screen: Screen = b.monitors[b.m_idx];
+                let screen: Screen = b.monitors[b.monitor_index];
 
                 loop {
                     if !running.load(Ordering::SeqCst) {
@@ -51,9 +51,9 @@ impl JellyfishApp {
                     }
                     if let Ok(image) = screen.capture_area(
                         0,
-                        height as i32 - ((b.depth + 1) as i32),
+                        height as i32 - ((b.depth_per_led + 1) as i32),
                         width,
-                        b.depth as u32,
+                        b.depth_per_led as u32,
                     ) {
                         let colors: &Vec<RGB> = jelly.grab(&image);
 
@@ -62,7 +62,7 @@ impl JellyfishApp {
                         neobridge.show();
                     }
 
-                    thread::sleep(Duration::from_millis(1000 / b.refresh_rate));
+                    thread::sleep(Duration::from_millis(1000 / b.tick_rate));
                 }
             }
         });

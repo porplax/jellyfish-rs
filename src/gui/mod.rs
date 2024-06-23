@@ -3,16 +3,16 @@ use std::sync::{atomic::{AtomicBool, Ordering}, Arc};
 use egui::RichText;
 use screenshots::Screen;
 
-use crate::VERSION;
+use crate::*;
 
 #[derive(Clone)]
 pub struct JellyfishApp {
     pub monitors: Vec<Screen>,
-    pub m_idx: usize,
-    pub n_of_leds: usize,
+    pub monitor_index: usize,
+    pub number_of_leds: usize,
 
-    pub depth: usize,
-    pub refresh_rate: u64,
+    pub depth_per_led: usize,
+    pub tick_rate: u64,
 
     pub brightness: f32,
     pub saturation: f32,
@@ -21,26 +21,12 @@ pub struct JellyfishApp {
     pub running: Arc<AtomicBool>,
 }
 
-impl Default for JellyfishApp {
-    fn default() -> Self {
-        Self {
-            monitors: Screen::all().unwrap(),
-            m_idx: 0,
-            n_of_leds: 30,
-
-            depth: 12,
-            refresh_rate: 30,
-
-            brightness: 1.0,
-            saturation: 0.2,
-
-            port: String::from("COM3"),
-            running: Arc::new(AtomicBool::new(false)),
-        }
-    }
-}
-
 impl eframe::App for JellyfishApp {
+    fn on_exit(&mut self, _gl: Option<&eframe::glow::Context>) {
+        self.save_struct_to_config(); 
+        
+    }
+
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
         egui::CentralPanel::default().show(ctx, |ui| {
             ui.heading("jellyfish!");
@@ -72,7 +58,7 @@ impl eframe::App for JellyfishApp {
             ui.horizontal(|ui| {
                 ui.label("monitor:");
                 ui.add(egui::Slider::new(
-                    &mut self.m_idx,
+                    &mut self.monitor_index,
                     0..=self.monitors.len() - 1,
                 ))
                 .on_hover_text_at_pointer("Which monitor to use.");
@@ -81,18 +67,18 @@ impl eframe::App for JellyfishApp {
             ui.horizontal(|ui| {
                 ui.label("depth:");
                 ui.add(
-                    egui::DragValue::new(&mut self.depth)
+                    egui::DragValue::new(&mut self.depth_per_led)
                         .speed(1)
-                        .clamp_range(0..=self.monitors[self.m_idx].display_info.height / 2),
+                        .clamp_range(0..=self.monitors[self.monitor_index].display_info.height / 2),
                 )
                 .on_hover_text_at_pointer("How many pixels to calculate for each LED.");
 
                 ui.label("# of leds:");
-                ui.add(egui::DragValue::new(&mut self.n_of_leds).speed(1))
+                ui.add(egui::DragValue::new(&mut self.number_of_leds).speed(1))
                     .on_hover_text_at_pointer("How many LEDs are present on the strip.");
 
-                ui.label("refresh rate:");
-                ui.add(egui::DragValue::new(&mut self.refresh_rate).speed(1))
+                ui.label("tick rate:");
+                ui.add(egui::DragValue::new(&mut self.tick_rate).speed(1))
                     .on_hover_text_at_pointer("How fast the program should run.");
             });
             ui.separator();
