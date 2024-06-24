@@ -1,178 +1,96 @@
-use clap::Parser;
-use neobridge_rust::{Neobridge, RGB};
+#![windows_subsystem = "windows"]
+use std::{ sync::atomic::Ordering, thread, time::Duration };
+
+use constants::VERSION;
+use eframe::egui;
+use neobridge_rust::{ Neobridge, RGB };
 use screenshots::Screen;
-use std::{process::exit, thread, time::Duration};
+use user_interface::app::JellyfishApp;
 
+mod channel_storage;
 mod color;
-mod engine;
-mod term;
+mod config;
+mod renderer;
+mod user_interface;
+mod constants;
 
-const RECOMMENDED_DEPTH_LIMIT: usize = 300;
-const VERSION: &str = env!("CARGO_PKG_VERSION");
+impl JellyfishApp {
+    pub fn run(&mut self) {
+        let b: JellyfishApp = self.clone();
+        let r: thread::JoinHandle<_> = std::thread::spawn({
+            let running = self.running.clone();
+            move || {
+                let width: u32 = b.monitors[b.monitor_index].display_info.width;
+                let height: u32 = b.monitors[b.monitor_index].display_info.height;
 
-#[derive(Parser, Debug)]
-#[command(
-    author = "cutesunshine",
-    version,
-    about = "Ambient lighting on neopixel devices."
-)]
-struct Args {
-    /// Monitor to screen record
-    #[arg(short, long, default_value_t = 0)]
-    monitor: usize,
+                let mut neobridge: Neobridge = Neobridge::new(
+                    &b.port,
+                    b.number_of_leds.try_into().unwrap()
+                );
+                let mut jelly: renderer::JellyRenderer = renderer::JellyRenderer::new(
+                    width,
+                    height,
+                    b.number_of_leds,
+                    b.depth_per_led,
+                    color::ColorOption::new(b.brightness, b.saturation),
+                    renderer::CalculationOption::new(false)
+                );
 
-    /// Number of LEDs present on the strip
-    #[arg(short, long)]
-    n_of_leds: usize,
+                neobridge.set_all(RGB(0, 0, 0));
+                neobridge.show();
 
-    /// Port of the board
-    #[arg(short, long)]
-    port: String,
+                let screen: Screen = b.monitors[b.monitor_index];
 
-    /// How many colors to calculate for each LED on the strip
-    #[arg(short, long, default_value_t = 16)]
-    depth: usize,
+                loop {
+                    if !running.load(Ordering::SeqCst) {
+                        neobridge.set_all(RGB(0, 0, 0));
+                        neobridge.show();
+                        return;
+                    }
+                    if
+                        let Ok(image) = screen.capture_area(
+                            0,
+                            (height as i32) - ((b.depth_per_led + 1) as i32),
+                            width,
+                            b.depth_per_led as u32
+                        )
+                    {
+                        let colors: &Vec<RGB> = jelly.grab(&image);
 
-    /// Refresh rate of the program
-    #[arg(short, long, default_value_t = 60)]
-    refresh_rate: u64,
+                        // then send it to the board.
+                        neobridge.set_list(colors);
+                        neobridge.show();
+                    }
 
-    /// Brightness of LED strip
-    #[arg(long, default_value_t = 1.0)]
-    brightness: f32,
-
-    /// Saturation of LED strip
-    #[arg(long, default_value_t = 0.0)]
-    saturation: f32,
-
-    /// Remove warnings
-    #[arg(long, default_value_t = false)]
-    no_warnings: bool,
-
-    /// Enables slient mode
-    #[arg(long, default_value_t = false)]
-    slient_mode: bool,
-
-    /// Disables color operations such as brightness, saturation, ...
-    #[arg(long, default_value_t = false)]
-    disable_color_operations: bool,
+                    thread::sleep(Duration::from_millis(1000 / b.tick_rate));
+                }
+            }
+        });
+        drop(r);
+    }
 }
 
-fn main() {
-    let args: Args = Args::parse();
-    let term = term::Terminal::new(args.slient_mode);
+fn main() -> Result<(), eframe::Error> {
+    let options = eframe::NativeOptions {
+        viewport: egui::ViewportBuilder
+            ::default()
+            .with_icon(egui::IconData {
+                rgba: image::open(r"assets\jellyfish.png").expect("failed").to_rgba8().into_raw(),
+                width: 160,
+                height: 160,
+            })
+            .with_inner_size([400.0, 200.0])
+            .with_resizable(false),
+        ..Default::default()
+    };
 
-    term.cli_print(
-        term::Level::Info,
-        &format!(
-"jellyfish v{} | swish swish🪼",
-            VERSION
-        ),
-    );
+    eframe::run_native(
+        &format!("jellyfish! v{}", VERSION),
+        options,
+        Box::new(|cc: &eframe::CreationContext| {
+            egui_extras::install_image_loaders(&cc.egui_ctx);
 
-    let monitors: Vec<Screen> = Screen::all().unwrap();
-
-    let width: u32 = monitors[args.monitor].display_info.width;
-    let height: u32 = monitors[args.monitor].display_info.height;
-
-    if args.depth > RECOMMENDED_DEPTH_LIMIT && !(args.no_warnings) {
-        term.cli_print(
-            term::Level::Warning,
-            &format!(
-                "depth ({}) might be too expensive! consider lowering if CPU usage is too high.",
-                args.depth
-            ),
-        );
-    }
-
-    if args.depth == 0 {
-        term.cli_print(
-            term::Level::Error,
-            "you cannot have a depth of 0, this leaves nothing for me to process! >:(",
-        );
-        exit(0)
-    }
-
-    if args.brightness > 1.0 || args.brightness < 0.0 {
-        term.cli_print(
-            term::Level::Error,
-            &format!(
-                "brightness ({}) must be between 0.0 and 1.0!",
-                args.brightness
-            ),
-        );
-        exit(0);
-    }
-
-    if args.saturation > 1.0 || args.saturation < 0.0 {
-        term.cli_print(
-            term::Level::Error, 
-            &format!(
-                "saturation ({}) must be between 0.0 and 1.0!",
-                args.saturation
-            ),
-        );
-        exit(0);
-    }
-
-    term.cli_print(
-        term::Level::Info,
-        &format!(
-            "using monitor: {}; width: {}, height: {}",
-            args.monitor, width, height
-        ),
-    );
-
-    // first, connect to board with neobridge. jelly just calculates what colors are on the monitor.
-    // then returns those values to the board.
-    let mut neobridge: Neobridge = Neobridge::new(&args.port, args.n_of_leds.try_into().unwrap());
-    let mut jelly: engine::JellyRenderer = engine::JellyRenderer::new(
-        width,
-        height,
-        args.n_of_leds,
-        args.depth,
-        color::ColorOption::new(args.brightness, args.saturation),
-        term::CalculationOption::new(args.disable_color_operations),
-    );
-
-    term.cli_print(
-        term::Level::Info,
-        &format!(
-            "connected to {} that has a number of {} LEDs.",
-            args.port, args.n_of_leds
-        ),
-    );
-
-    // reset LEDs to black.
-    neobridge.set_all(RGB(0, 0, 0));
-    neobridge.show();
-
-    term.cli_print(
-        term::Level::Info,
-        &format!("sent reset commands to {}, assuming board works", args.port),
-    );
-
-    // start loop here.
-    let screen: Screen = monitors[args.monitor];
-
-    term.cli_print(term::Level::Info, "started capture!");
-    loop {
-        // don't put image into a separate var, this prevents errors.
-        if let Ok(image) = screen.capture_area(
-            0,
-            height as i32 - ((args.depth + 1) as i32),
-            width,
-            args.depth as u32,
-        ) {
-            // first get the colors.
-            let colors: &Vec<RGB> = jelly.grab(&image);
-
-            // then send it to the board.
-            neobridge.set_list(colors);
-            neobridge.show();
-        }
-
-        // just so it doesn't put a lot of load onto the CPU.
-        thread::sleep(Duration::from_millis(1000 / args.refresh_rate));
-    }
+            Box::<JellyfishApp>::default()
+        })
+    )
 }
