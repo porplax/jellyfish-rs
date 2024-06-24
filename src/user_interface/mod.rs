@@ -1,4 +1,4 @@
-use std::sync::{ atomic::{ AtomicBool, Ordering }, Arc };
+use std::sync::atomic::Ordering;
 use egui::RichText;
 use crate::*;
 
@@ -59,7 +59,6 @@ impl eframe::App for JellyfishApp {
                 );
             });
             ui.separator();
-
             ui.horizontal(|ui| {
                 ui.label("brightness:");
                 ui.add(
@@ -79,7 +78,24 @@ impl eframe::App for JellyfishApp {
             });
 
             ui.horizontal(|ui| {
-                if
+                if 
+                    !self.running.load(Ordering::Relaxed) &&
+                    ui.button(RichText::new("run!")).clicked() 
+                {
+                        self.running.store(true, Ordering::SeqCst);
+                        <JellyfishApp as Clone>::clone(&self).run();
+                        return;
+
+                }
+                if 
+                    self.running.load(Ordering::Relaxed) &&
+                    ui.button(RichText::new("stop!")).clicked() 
+                {
+                    self.running.store(false, Ordering::SeqCst);
+                    return;
+                }
+ 
+                /* if
                     ui.button(RichText::new("run!")).clicked() &&
                     !self.running.load(Ordering::Relaxed)
                 {
@@ -91,7 +107,8 @@ impl eframe::App for JellyfishApp {
                     if ui.button("stop!").clicked() {
                         self.running.store(false, Ordering::SeqCst);
                     }
-                }
+                } */
+
             });
         });
     }
