@@ -2,7 +2,7 @@ pub mod color_ops;
 
 pub struct ColorOption {
     pub brightness: f32,
-    pub saturation: f32
+    pub saturation: f32,
 }
 
 impl ColorOption {

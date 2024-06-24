@@ -1,4 +1,4 @@
-use std::sync::{Arc, atomic::AtomicBool};
+use std::sync::{ Arc, atomic::AtomicBool };
 
 use screenshots::Screen;
 

@@ -51,28 +51,27 @@ impl ChannelStorage {
         if r > self.high_r && g > self.high_g && b > self.high_b {
             self.high_r = r;
             self.high_g = g;
-            self.high_b = b
+            self.high_b = b;
         } else if r < self.low_r && g < self.low_g && b < self.low_b {
             self.low_r = r;
             self.low_g = g;
-            self.low_b = b
+            self.low_b = b;
         }
 
-        self.sum_of_r = self.sum_of_r + r as u16;
-        self.sum_of_g = self.sum_of_g + g as u16;
-        self.sum_of_b = self.sum_of_b + b as u16;
+        self.sum_of_r = self.sum_of_r + (r as u16);
+        self.sum_of_g = self.sum_of_g + (g as u16);
+        self.sum_of_b = self.sum_of_b + (b as u16);
     }
 
     pub fn compile_r_channel_to_u8(&mut self) -> u8 {
-        (self.sum_of_r / self.expecting_size as u16) as u8
+        (self.sum_of_r / (self.expecting_size as u16)) as u8
     }
 
     pub fn compile_g_channel_to_u8(&mut self) -> u8 {
-        (self.sum_of_g / self.expecting_size as u16) as u8
+        (self.sum_of_g / (self.expecting_size as u16)) as u8
     }
 
     pub fn compile_b_channel_to_u8(&mut self) -> u8 {
-        (self.sum_of_b / self.expecting_size as u16) as u8
+        (self.sum_of_b / (self.expecting_size as u16)) as u8
     }
 }
-
