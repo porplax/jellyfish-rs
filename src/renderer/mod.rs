@@ -2,8 +2,20 @@ use neobridge_rust::RGB;
 use screenshots::image::{ImageBuffer, Pixel, Rgba};
 
 use crate::{
-    calc, term::CalculationOption
+    channel_storage, color
 };
+
+pub struct CalculationOption {
+    pub disable_color_operations: bool,
+}
+
+impl CalculationOption {
+    pub fn new(disable_color_operations: bool) -> CalculationOption {
+        CalculationOption {
+            disable_color_operations,
+        }
+    }
+}
 
 pub struct JellyRenderer {
     width: u32,
@@ -13,7 +25,7 @@ pub struct JellyRenderer {
 
     depth: usize,
 
-    color_option: calc::ColorOption,
+    color_option: color::ColorOption,
     calc_option: CalculationOption,
 
     result: Vec<RGB>,
@@ -25,7 +37,7 @@ impl JellyRenderer {
         height: u32,
         n_of_leds: usize,
         depth: usize,
-        color_option: calc::ColorOption,
+        color_option: color::ColorOption,
         calc_option: CalculationOption,
     ) -> JellyRenderer {
         JellyRenderer {
@@ -47,7 +59,7 @@ impl JellyRenderer {
         let mut x: u32 = 0;
 
         // we want to get a certain amount of pixels at the bottom.
-        let mut channels: calc::ChannelStorage = calc::ChannelStorage::new(self.depth);
+        let mut channels: channel_storage::ChannelStorage = channel_storage::ChannelStorage::new(self.depth);
         for _row in 0..self.n_of_leds {
             // we are getting a column of RGB values for each LED on a strip.
             // for example, if I have a depth of 10,
@@ -72,8 +84,8 @@ impl JellyRenderer {
             );
 
             if !(self.calc_option.disable_color_operations) {
-                rgb = calc::ColorOperation::set_saturation(&rgb, self.color_option.saturation);
-                rgb = calc::ColorOperation::set_brightness(&rgb, self.color_option.brightness);
+                rgb = color::color_ops::ColorOperation::set_saturation(&rgb, self.color_option.saturation);
+                rgb = color::color_ops::ColorOperation::set_brightness(&rgb, self.color_option.brightness);
             }
 
             self.result.push(rgb);

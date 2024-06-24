@@ -1,30 +1,14 @@
 use std::sync::{atomic::{AtomicBool, Ordering}, Arc};
 
 use egui::RichText;
-use screenshots::Screen;
 
 use crate::*;
 
-#[derive(Clone)]
-pub struct JellyfishApp {
-    pub monitors: Vec<Screen>,
-    pub monitor_index: usize,
-    pub number_of_leds: usize,
-
-    pub depth_per_led: usize,
-    pub tick_rate: u64,
-
-    pub brightness: f32,
-    pub saturation: f32,
-
-    pub port: String,
-    pub running: Arc<AtomicBool>,
-}
+pub mod app;
 
 impl eframe::App for JellyfishApp {
     fn on_exit(&mut self, _gl: Option<&eframe::glow::Context>) {
         self.save_struct_to_config(); 
-        
     }
 
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {

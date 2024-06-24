@@ -4,8 +4,9 @@ use screenshots::Screen;
 use serde_json::{Value, json};
 use serde::Deserialize;
 
-use crate::{constants::*, gui::JellyfishApp};
+use crate::{constants::*, user_interface::app::JellyfishApp};
 
+// TODO: Refactor this entire file, cause my god is this ugly.
 
 #[derive(Deserialize)]
 struct GetConfigData {
@@ -39,7 +40,7 @@ impl JellyfishApp {
 
     // should be saved as 'config.json'
     pub fn save_struct_to_config(&mut self){
-        let mut file = std::fs::File::create(CONFIG_NAME).unwrap();
+        let file = std::fs::File::create(CONFIG_NAME).unwrap();
         let contents: Value;
         if !(std::path::Path::new(CONFIG_NAME).exists()) {
             contents = JellyfishApp::retrive_struct_as_json();
