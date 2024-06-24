@@ -56,6 +56,8 @@ cd jellyfish-rs
 cargo build
 ```
 
+Building release profile will not work if `/assets` from the root directory is not in the same one as the executable.
+
 *PS: This was bulit on windows. I am unsure if other operating systems are supported.*
 
 # 🖋️getting started🖋️
