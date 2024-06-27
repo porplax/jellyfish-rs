@@ -6,7 +6,7 @@ use user_interface::app::JellyfishApp;
 use crate::{color, renderer, user_interface};
 
 impl JellyfishApp {
-    pub async fn run(&mut self) {
+    pub fn run(&mut self) {
         let b: JellyfishApp = self.clone();
         let r: thread::JoinHandle<_> = std::thread::spawn({
             let running = self.running.clone();
