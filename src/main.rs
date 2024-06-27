@@ -41,12 +41,7 @@ impl JellyfishApp {
 
                 let screen: Screen = b.monitors[b.monitor_index];
 
-                loop {
-                    if !running.load(Ordering::SeqCst) {
-                        neobridge.set_all(RGB(0, 0, 0));
-                        neobridge.show();
-                        return;
-                    }
+                while running.load(Ordering::SeqCst) {
                     if
                         let Ok(image) = screen.capture_area(
                             0,
@@ -64,6 +59,8 @@ impl JellyfishApp {
 
                     thread::sleep(Duration::from_millis(1000 / b.tick_rate));
                 }
+                neobridge.set_all(RGB(0, 0, 0));
+                neobridge.show();
             }
         });
         drop(r);
