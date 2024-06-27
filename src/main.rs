@@ -32,8 +32,7 @@ impl JellyfishApp {
                     height,
                     b.number_of_leds,
                     b.depth_per_led,
-                    color::ColorOption::new(b.brightness, b.saturation),
-                    renderer::CalculationOption::new(false)
+                    color::ColorOption::new(b.brightness, b.saturation)
                 );
 
                 neobridge.set_all(RGB(0, 0, 0));

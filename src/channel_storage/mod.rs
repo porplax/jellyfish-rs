@@ -63,15 +63,7 @@ impl ChannelStorage {
         self.sum_of_b = self.sum_of_b + (b as u16);
     }
 
-    pub fn compile_r_channel_to_u8(&mut self) -> u8 {
-        (self.sum_of_r / (self.expecting_size as u16)) as u8
-    }
-
-    pub fn compile_g_channel_to_u8(&mut self) -> u8 {
-        (self.sum_of_g / (self.expecting_size as u16)) as u8
-    }
-
-    pub fn compile_b_channel_to_u8(&mut self) -> u8 {
-        (self.sum_of_b / (self.expecting_size as u16)) as u8
+    pub fn to_rgbu8(&mut self) -> neobridge_rust::RGB {
+        return neobridge_rust::RGB((self.sum_of_r / (self.expecting_size as u16)) as u8, (self.sum_of_g / (self.expecting_size as u16)) as u8, (self.sum_of_b / (self.expecting_size as u16)) as u8);
     }
 }

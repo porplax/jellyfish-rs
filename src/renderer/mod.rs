@@ -3,18 +3,6 @@ use screenshots::image::{ ImageBuffer, Pixel, Rgba };
 
 use crate::{ channel_storage, color };
 
-pub struct CalculationOption {
-    pub disable_color_operations: bool,
-}
-
-impl CalculationOption {
-    pub fn new(disable_color_operations: bool) -> CalculationOption {
-        CalculationOption {
-            disable_color_operations,
-        }
-    }
-}
-
 pub struct JellyRenderer {
     width: u32,
     _height: u32,
@@ -24,7 +12,6 @@ pub struct JellyRenderer {
     depth: usize,
 
     color_option: color::ColorOption,
-    calc_option: CalculationOption,
 
     result: Vec<RGB>,
 }
@@ -36,7 +23,6 @@ impl JellyRenderer {
         n_of_leds: usize,
         depth: usize,
         color_option: color::ColorOption,
-        calc_option: CalculationOption
     ) -> JellyRenderer {
         JellyRenderer {
             width,
@@ -46,7 +32,6 @@ impl JellyRenderer {
             depth,
 
             color_option,
-            calc_option,
 
             result: Vec::with_capacity(0),
         }
@@ -67,28 +52,21 @@ impl JellyRenderer {
             channels.clear();
             for _column in 0..self.depth {
                 let rgb_val: &Rgba<u8> = image.get_pixel(x, _column as u32);
-
                 // to average over these later, go ahead and store these.
                 channels.push(rgb_val.channels()[0], rgb_val.channels()[1], rgb_val.channels()[2]);
             }
 
             // every value (r, g, b) in the column is averaged into a single RGB.
-            let mut rgb: RGB = RGB(
-                channels.compile_r_channel_to_u8(),
-                channels.compile_g_channel_to_u8(),
-                channels.compile_b_channel_to_u8()
-            );
+            let mut rgb: RGB = channels.to_rgbu8();
 
-            if !self.calc_option.disable_color_operations {
-                rgb = color::color_ops::ColorOperation::set_saturation(
-                    &rgb,
-                    self.color_option.saturation
-                );
-                rgb = color::color_ops::ColorOperation::set_brightness(
-                    &rgb,
-                    self.color_option.brightness
-                );
-            }
+            rgb = color::color_ops::ColorOperation::set_saturation(
+                &rgb,
+                self.color_option.saturation
+            );
+            rgb = color::color_ops::ColorOperation::set_brightness(
+                &rgb,
+                self.color_option.brightness
+            );
 
             self.result.push(rgb);
             x += self.width / (self.n_of_leds as u32);
