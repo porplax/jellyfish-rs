@@ -56,6 +56,8 @@ cd jellyfish-rs
 cargo build
 ```
 
+Building release profile will not work if `/assets` from the root directory is not in the same one as the executable.
+
 *PS: This was bulit on windows. I am unsure if other operating systems are supported.*
 
 # 🖋️getting started🖋️
@@ -87,6 +89,8 @@ Before you can run the jellyfish program, you'll need a circuitpython board to r
 
 # installing the project
 
+![gui](https://github.com/porplax/jellyfish-rs/assets/66521670/92b3cb30-0e21-44ef-91d9-ed14438e36f3)
+
 - Download `jellyfish-v2.0.0.zip` into a suitable location.
 - Extract
 - Simply run the `.exe` file, and you can start using Jellyfish!
@@ -112,6 +116,6 @@ There are no known bugs or issues! If you find one, please make an issue.
 
 ## those involved
 
-- [@porplax](https://github.com/porplax) - Creator of the project. (@zaynes_starr on discord)
+- [@porplax](https://github.com/porplax), @Localis9 - Creator of the project. (@zaynes_starr on discord), (Localis is just my old acc)
 
 See also the list of [contributors](https://github.com/porplax/jellyfish-rs/contributors) who participated in this project.
